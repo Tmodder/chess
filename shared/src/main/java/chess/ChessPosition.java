@@ -23,6 +23,13 @@ public class ChessPosition {
         return row;
     }
 
+    public void setNewPosition(int row, int col)
+    {
+        this.row = row;
+        this.col = col;
+    }
+
+
     /**
      * @return which column this position is in
      * 1 codes for the left row

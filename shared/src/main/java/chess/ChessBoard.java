@@ -30,6 +30,7 @@ public class ChessBoard {
      * @return Either the piece at the position, or null if no piece is at that
      * position
      */
+    //TODO add return null for no piece
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()][position.getColumn()];
     }
