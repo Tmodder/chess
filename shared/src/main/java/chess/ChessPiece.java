@@ -92,21 +92,46 @@ public class ChessPiece {
     private Collection<ChessMove> getBishopMoves(ChessBoard board, ChessPosition myPosition) {
         boolean isBlocked = false;
         boolean offBoard = false;
-        int shift = 1;
+        int rowShift = 1;
+        int colShift = 1;
         ChessPosition movePosition = myPosition;
         Collection <ChessMove> moves = new ArrayList<>();
-        //first diagonal check
-        while(!isBlocked && !offBoard)
-        {
-            int moveRow = myPosition.getRow() + shift;
-            int moveColumn = myPosition.getColumn() + shift;
-            movePosition.setNewPosition(moveRow, moveColumn);
-           //Todo add check for blocking piece!
-            ChessMove move = new ChessMove(myPosition,movePosition,null);
-            moves.add(move);
+        for (int i = 0; i <= 3; i++) {
+            while(!isBlocked && !offBoard) {
+                int moveRow = movePosition.getRow() + rowShift;
+                int moveColumn = movePosition.getColumn() + colShift;
+                if (moveRow == 7 || moveColumn == 7)
+                {
+                    offBoard = true;
+                }
+
+                movePosition.setNewPosition(moveRow, moveColumn);
+                ChessPiece blockingPiece = board.getPiece(movePosition);
+                if (blockingPiece != null) {
+                    isBlocked = true;
+                    if (blockingPiece.getTeamColor() != this.getTeamColor())
+                    {
+                        ChessMove captureMove = new ChessMove(myPosition,movePosition,null);
+                        moves.add(captureMove);
+                        break;
+                    }
+                    break;
+                }
+                ChessMove move = new ChessMove(myPosition,movePosition,null);
+                moves.add(move);
+            }
+            // attempt to rotate diagonal
+            if (rowShift > 0) {
+                rowShift *= -1;
+            }
+            else {
+                colShift *= -1;
+            }
+
+         return moves;
+
         }
-        throw RuntimeException("Not finished!");
-    }
+
 
     /**
      *Helper function for pieceMoves to return all the positions the knight can move to
@@ -138,6 +163,10 @@ public class ChessPiece {
         throw new RuntimeException("Not implemented");
     }
 
-    }
+}
 
+
+
+
+    }
 
