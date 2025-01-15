@@ -95,13 +95,12 @@ public class ChessPiece {
         int rowShift = 1;
         int colShift = 1;
         ChessPosition movePosition = myPosition;
-        Collection <ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         for (int i = 0; i <= 3; i++) {
-            while(!isBlocked && !offBoard) {
+            while (!isBlocked && !offBoard) {
                 int moveRow = movePosition.getRow() + rowShift;
                 int moveColumn = movePosition.getColumn() + colShift;
-                if (moveRow == 7 || moveColumn == 7)
-                {
+                if (moveRow == 7 || moveColumn == 7) {
                     offBoard = true;
                 }
 
@@ -109,28 +108,27 @@ public class ChessPiece {
                 ChessPiece blockingPiece = board.getPiece(movePosition);
                 if (blockingPiece != null) {
                     isBlocked = true;
-                    if (blockingPiece.getTeamColor() != this.getTeamColor())
-                    {
-                        ChessMove captureMove = new ChessMove(myPosition,movePosition,null);
+                    if (blockingPiece.getTeamColor() != this.getTeamColor()) {
+                        ChessMove captureMove = new ChessMove(myPosition, movePosition, null);
                         moves.add(captureMove);
                         break;
                     }
                     break;
                 }
-                ChessMove move = new ChessMove(myPosition,movePosition,null);
+                ChessMove move = new ChessMove(myPosition, movePosition, null);
                 moves.add(move);
             }
-            // attempt to rotate diagonal
-            if (rowShift > 0) {
-                rowShift *= -1;
-            }
-            else {
+            // rotate to the diagonal across y axis if same sign
+            if (rowShift > 0 && colShift > 0 || rowShift < 0 && colShift < 0) {
                 colShift *= -1;
             }
-
-         return moves;
-
+            // else rotate diagonal across the x axis
+            else {
+                rowShift *= -1;
+            }
         }
+        return moves;
+    }
 
 
     /**
@@ -168,5 +166,5 @@ public class ChessPiece {
 
 
 
-    }
+
 
