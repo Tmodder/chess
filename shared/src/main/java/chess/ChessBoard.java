@@ -27,6 +27,13 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
+    //TODO fix tostring so that we get readble output
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "board=" + Arrays.toString(board) +
+                '}';
+    }
 
     /**
      * Adds a chess piece to the chessboard
