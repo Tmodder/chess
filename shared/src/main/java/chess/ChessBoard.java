@@ -27,12 +27,27 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(board);
     }
-    //TODO fix tostring so that we get readble output
+
     @Override
     public String toString() {
-        return "ChessBoard{" +
-                "board=" + Arrays.toString(board) +
-                '}';
+        String output = "ChessBoard{ board = \n";
+        ChessPiece piece = null;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                piece = board[i][j];
+                output += "[";
+                if (piece != null) {
+                    output += piece.toString();
+                }
+                else
+                {
+                    output += " ";
+                }
+                output += "] ";
+            }
+            output += "\n";
+        }
+        return output;
     }
 
     /**

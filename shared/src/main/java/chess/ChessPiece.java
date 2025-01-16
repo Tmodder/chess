@@ -35,10 +35,21 @@ public class ChessPiece {
 
     @Override
     public String toString() {
-        return "ChessPiece{" +
-                "pieceColor=" + pieceColor +
-                ", pieceType=" + pieceType +
-                '}';
+        String output = "";
+        switch(pieceType)
+        {
+            case KING -> output = "K";
+            case QUEEN -> output = "Q";
+            case BISHOP -> output = "B";
+            case KNIGHT -> output = "N";
+            case ROOK -> output = "R";
+            case PAWN -> output = "P";
+        }
+        if (pieceColor != ChessGame.TeamColor.WHITE && !output.equals(" "))
+        {
+            output.toLowerCase();
+        }
+        return output;
     }
 
     /**
