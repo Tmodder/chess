@@ -7,6 +7,7 @@ public class Main {
         //TODO Fix position and indexing so 0 0 doesnt crash
         var position = new ChessPosition(1,1);
         board.addPiece(position, piece);
-        System.out.println("♕ 240 Chess Client: " + board);
+        var movesList = piece.pieceMoves(board,position);
+        System.out.println("♕ 240 Chess Client: " + movesList);
     }
 }

@@ -12,6 +12,7 @@ import java.util.Objects;
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8];
     public ChessBoard() {
+
     }
 
     @Override
@@ -57,8 +58,9 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        int row = position.getRow();
-        int col = position.getColumn();
+        // convert from 1 based index system starting bottom left to 0 top-left start system
+        int row = 8 - position.getRow();
+        int col = position.getColumn() - 1;
         board[row][col] = piece;
     }
 
@@ -70,7 +72,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getRow()][position.getColumn()];
+        //convert from 0 top left start to 1 bottom left start
+        int row = 8 - position.getRow();
+        int col = position.getColumn() + 1;
+        return board[row][col];
     }
 
     /**

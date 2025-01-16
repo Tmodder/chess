@@ -134,11 +134,12 @@ public class ChessPiece {
             while (!isBlocked && !offBoard) {
                 int moveRow = movePosition.getRow() + rowShift;
                 int moveColumn = movePosition.getColumn() + colShift;
-                if (moveRow == 7 || moveColumn == 7) {
+                if (moveRow == 8 || moveColumn == 8 || moveRow == 1 || moveColumn == 1) {
                     offBoard = true;
                 }
 
                 movePosition.setNewPosition(moveRow, moveColumn);
+                //TODO make boundary checking smart so this doesnt find something out of bounds
                 ChessPiece blockingPiece = board.getPiece(movePosition);
                 if (blockingPiece != null) {
                     isBlocked = true;
@@ -160,6 +161,7 @@ public class ChessPiece {
             else {
                 rowShift *= -1;
             }
+            movePosition = myPosition;
         }
         return moves;
     }
