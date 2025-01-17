@@ -17,6 +17,13 @@ public class ChessPosition {
         this.col = col;
     }
 
+    // constructor allowing for initialization copying off other object
+    // is it possible to use copy method?
+    public ChessPosition(ChessPosition other) {
+        this.row = other.row;
+        this.col = other.col;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -37,6 +44,17 @@ public class ChessPosition {
                 "row=" + row +
                 ", col=" + col +
                 '}';
+    }
+    /**
+     * @return copy of this ChessPosition
+     * @param position ChessPosition  object to copy onto
+     *
+     */
+    public ChessPosition copy(ChessPosition position)
+    {
+        position.row = this.row;
+        position.col = this.col;
+        return position;
     }
 
     /**
