@@ -1,4 +1,11 @@
 package chess;
-//TODO add functionality to this interface and inheriting classes
-public class PiecesMovesCalculator {
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * Calculating class to return valid chess moves from given position
+ */
+interface PiecesMovesCalculator {
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
+
 }
