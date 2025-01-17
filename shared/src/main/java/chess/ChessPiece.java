@@ -128,9 +128,12 @@ public class ChessPiece {
         boolean offBoard = false;
         int rowShift = 1;
         int colShift = 1;
-        ChessPosition movePosition = myPosition;
+        ChessPosition movePosition;
         Collection<ChessMove> moves = new ArrayList<>();
         for (int i = 0; i <= 3; i++) {
+            //here we are passing by reference? Or something because changing movePosition changes myPosition
+            //TODO fix that crap
+            movePosition = myPosition;
             while (!isBlocked && !offBoard) {
                 int moveRow = movePosition.getRow() + rowShift;
                 int moveColumn = movePosition.getColumn() + colShift;
@@ -141,7 +144,6 @@ public class ChessPiece {
                     break;
                 }
                 movePosition.setNewPosition(moveRow, moveColumn);
-                //TODO make boundary checking smart so this doesnt find something out of bounds
                 ChessPiece blockingPiece = board.getPiece(movePosition);
                 if (blockingPiece != null) {
                     isBlocked = true;
@@ -163,7 +165,6 @@ public class ChessPiece {
             else {
                 rowShift *= -1;
             }
-            movePosition = myPosition;
         }
         return moves;
     }
