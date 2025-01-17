@@ -128,12 +128,9 @@ public class ChessPiece {
         boolean offBoard = false;
         int rowShift = 1;
         int colShift = 1;
-        ChessPosition movePosition = new ChessPosition(myPosition);
         Collection<ChessMove> moves = new ArrayList<>();
         for (int i = 0; i <= 3; i++) {
-
-            // still causes weird copy behavior
-            movePosition = myPosition.copy(myPosition);
+            ChessPosition movePosition = new ChessPosition(myPosition);
             while (!isBlocked && !offBoard) {
                 int moveRow = movePosition.getRow() + rowShift;
                 int moveColumn = movePosition.getColumn() + colShift;
@@ -156,7 +153,7 @@ public class ChessPiece {
                 }
                 var start = new ChessPosition(myPosition);
                 var end = new ChessPosition(movePosition);
-                var move = new ChessMove(myPosition, movePosition, null);
+                var move = new ChessMove(start, end, null);
                 moves.add(move);
             }
             // rotate to the diagonal across y axis if same sign
@@ -167,6 +164,8 @@ public class ChessPiece {
             else {
                 rowShift *= -1;
             }
+            isBlocked = false;
+            offBoard = false;
         }
         return moves;
     }
