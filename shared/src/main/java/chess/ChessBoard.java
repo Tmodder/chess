@@ -74,7 +74,7 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         //convert from 0 top left start to 1 bottom left start
         int row = 8 - position.getRow();
-        int col = position.getColumn() + 1;
+        int col = position.getColumn() - 1;
         return board[row][col];
     }
 
