@@ -86,15 +86,16 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return switch (this.pieceType) {
-            case KING -> getKingMoves(board, myPosition);
-            case QUEEN -> getQueenMoves(board, myPosition);
-            case BISHOP -> getBishopMoves(board, myPosition);
-            case KNIGHT -> getKnightMoves(board, myPosition);
-            case ROOK -> getRookMoves(board, myPosition);
-            case PAWN -> getPawnMoves(board, myPosition);
+        PiecesMovesCalculator calculator = switch (this.pieceType) {
+            case KING -> new KingMovesCalculator();
+            case QUEEN -> new QueenMovesCalculator();
+            case BISHOP -> new BishopMovesCalculator();
+            case KNIGHT -> new KnightMovesCalculator();
+            case ROOK -> new RookMovesCalculator();
+            case PAWN -> new PawnMovesCalculator();
             default -> throw new RuntimeException("Invalid piece type");
         };
+        return calculator.pieceMoves(board,myPosition);
     }
 
     /**
