@@ -10,6 +10,7 @@ public class PawnMovesCalculator implements PiecesMovesCalculator{
 
     @Override
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+
         return List.of();
     }
 }

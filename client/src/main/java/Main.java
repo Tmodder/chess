@@ -2,9 +2,9 @@ import chess.*;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
         var board = new ChessBoard();
-        var position = new ChessPosition(8,1);
+        var position = new ChessPosition(4,4);
         board.addPiece(position, piece);
         var pos2 = new ChessPosition(6,6);
         var piece2 = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
