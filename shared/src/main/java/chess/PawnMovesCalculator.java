@@ -25,6 +25,8 @@ public class PawnMovesCalculator implements PiecesMovesCalculator{
         else {
             positions = advance(board, myPosition, false, myColor);
         }
+        Collection<ChessPosition> capturePositions = capture(board, myPosition, myColor);
+        positions.addAll(capturePositions);
 
         if (!positions.isEmpty())
         {
@@ -50,6 +52,46 @@ public class PawnMovesCalculator implements PiecesMovesCalculator{
             }
         }
         return moves;
+    }
+
+    public Collection<ChessPosition> capture(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor)
+    {
+        Collection<ChessPosition> positions = new ArrayList<>();
+        int rowShift = myColor == ChessGame.TeamColor.WHITE ? 1 : -1;
+        int moveRow = myPosition.getRow() + rowShift;
+        int curCol = myPosition.getColumn();
+        int leftMove = curCol - 1;
+        int rightMove = curCol + 1;
+        if(leftMove >= 1)
+        {
+            ChessPosition captureLeft = new ChessPosition(moveRow,leftMove);
+            positions.add(captureLeft);
+        }
+
+        if (rightMove <= 8)
+        {
+            ChessPosition captureRight = new ChessPosition(moveRow,rightMove);
+            positions.add(captureRight);
+        }
+
+        Collection<ChessPosition> finalPositions = new ArrayList<>();
+        for (ChessPosition position : positions)
+        {
+            ChessPiece blocker = board.getPiece(position);
+            if(blocker == null)
+            {
+                continue;
+            }
+            else if (blocker.getTeamColor() != myColor)
+            {
+                finalPositions.add(position);
+            }
+
+        }
+        return finalPositions;
+
+
+
     }
 
     public Collection<ChessPosition> advance(ChessBoard board, ChessPosition myPosition, boolean isDouble,
