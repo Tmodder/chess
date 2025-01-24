@@ -1,5 +1,4 @@
 package chess;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -9,6 +8,26 @@ interface PiecesMovesCalculator {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition);
 
     /**
+     * Used to test if a square can
+     * @param board the chess board
+     * @param movePosition the position to move to
+     * @param color the team color of moving piece
+     * @return boolean value if movement is possible
+     */
+    static boolean canTakeSquare(ChessBoard board, ChessPosition movePosition, ChessGame.TeamColor color) {
+        ChessPiece blockingPiece = board.getPiece(movePosition);
+        if (blockingPiece != null) {
+
+            // if they are opposite, enable capturing
+            return blockingPiece.getTeamColor() != color;
+        }
+        return true;
+    }
+
+    //static boolean isOffBoard(board,movePosition) optional move here
+    // shift function? trying to reduce code duplication
+
+    /**
      * A static method to calculate all the possible moves moving down a line(rank, file or diagonal)
      * @param board ChessBoard object which gives the current board state
      * @param myPosition ChessPosition object which gives the current position
@@ -16,7 +35,6 @@ interface PiecesMovesCalculator {
      * @param lineType string which gives type of line (rank, file, right, or left diagonal)
      * @return Collection of ChessMove
      */
-
     static Collection<ChessMove> addLine(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, String lineType) {
         boolean isBlocked = false;
         boolean offBoard = false;
@@ -51,23 +69,22 @@ interface PiecesMovesCalculator {
                     offBoard = true;
                     break;
                 }
-                movePosition.setNewPosition(moveRow, moveColumn);
-                ChessPiece blockingPiece = board.getPiece(movePosition);
-                if (blockingPiece != null) {
-                    isBlocked = true;
 
-                    // if they are opposite, enable capturing
-                    if (blockingPiece.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                        ChessMove captureMove = new ChessMove(myPosition, movePosition, null);
-                        moves.add(captureMove);
-                        break;
-                    }
+                movePosition.setPosition(moveRow, moveColumn);
+                isBlocked = !(canTakeSquare(board, movePosition, board.getPiece(myPosition).getTeamColor()));
+                if (isBlocked) {
                     break;
                 }
-                var start = new ChessPosition(myPosition);
-                var end = new ChessPosition(movePosition);
-                var move = new ChessMove(start, end, null);
-                moves.add(move);
+                    var start = new ChessPosition(myPosition);
+                    var end = new ChessPosition(movePosition);
+                    var move = new ChessMove(start, end, null);
+                    moves.add(move);
+
+                    //refactor this to make it nice
+                    if (board.getPiece(end) != null) {
+                        break;
+                    }
+
             }
 
             //flip signs for both

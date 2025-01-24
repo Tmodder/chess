@@ -17,6 +17,8 @@ public class ChessPosition {
         this.col = col;
     }
 
+    public ChessPosition() {}
+
     // constructor allowing for initialization copying off other object
     // is it possible to use copy method?
     public ChessPosition(ChessPosition other) {
@@ -65,7 +67,7 @@ public class ChessPosition {
         return row;
     }
 
-    public void setNewPosition(int row, int col)
+    public void setPosition(int row, int col)
     {
         this.row = row;
         this.col = col;

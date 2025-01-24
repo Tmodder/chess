@@ -2,10 +2,13 @@ import chess.*;
 
 public class Main {
     public static void main(String[] args) {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
         var board = new ChessBoard();
-        var position = new ChessPosition(4,4);
+        var position = new ChessPosition(8,1);
         board.addPiece(position, piece);
+        var pos2 = new ChessPosition(6,6);
+        var piece2 = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        board.addPiece(pos2, piece2);
         var movesList = piece.pieceMoves(board,position);
         System.out.println("♕ 240 Chess Client: " + board + movesList);
     }

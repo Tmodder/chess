@@ -45,9 +45,9 @@ public class ChessPiece {
             case ROOK -> output = "R";
             case PAWN -> output = "P";
         }
-        if (pieceColor != ChessGame.TeamColor.WHITE && !output.equals(" "))
+        if (pieceColor != ChessGame.TeamColor.WHITE)
         {
-            output.toLowerCase();
+            output = output.toLowerCase();
         }
         return output;
     }
@@ -141,7 +141,7 @@ public class ChessPiece {
                     offBoard = true;
                     break;
                 }
-                movePosition.setNewPosition(moveRow, moveColumn);
+                movePosition.setPosition(moveRow, moveColumn);
                 ChessPiece blockingPiece = board.getPiece(movePosition);
                 if (blockingPiece != null) {
                     isBlocked = true;
