@@ -11,9 +11,19 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8];
+    final private String startBoard = """
+            [r] [n] [b] [q] [k] [b] [n] [r]
+            [p] [p] [p] [p] [p] [p] [p] [p]
+            [~] [~] [~] [~] [~] [~] [~] [~]
+            [~] [~] [~] [~] [~] [~] [~] [~]
+            [~] [~] [~] [~] [~] [~] [~] [~]
+            [~] [~] [~] [~] [~] [~] [~] [~]
+            [P] [P] [P] [P] [P] [P] [P] [P]
+            [R] [N] [B] [Q] [K] [B] [N] [R]
+            """;
     public ChessBoard() {
-
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -42,7 +52,7 @@ public class ChessBoard {
                 }
                 else
                 {
-                    output += " ";
+                    output += "~";
                 }
                 output += "] ";
             }
@@ -50,6 +60,55 @@ public class ChessBoard {
         }
         return output;
     }
+
+    //inspired by test utilities
+    private ChessPiece[][] loadBoard(String boardText)
+    {
+        var newBoard = new ChessPiece[8][8];
+        int row = 0;
+        int col = 0;
+        for (char c : boardText.toCharArray())
+        {
+            switch(c)
+            {
+                case '\n':
+                    col = 0;
+                    row++;
+                    break;
+
+                case '[':
+                case ']':
+                case '~':
+                    break;
+
+                case ' ':
+                    col++;
+                    break;
+                default:
+                    ChessGame.TeamColor color = Character.isLowerCase(c) ? ChessGame.TeamColor.BLACK :
+                    ChessGame.TeamColor.WHITE;
+                    var newPiece = convertCharToType(c, color);
+                    newBoard[row][col] = newPiece;
+                    }
+            }
+        return newBoard;
+        }
+
+    private static ChessPiece convertCharToType(char c, ChessGame.TeamColor color) {
+        c = Character.toLowerCase(c);
+        ChessPiece.PieceType type = switch (c) {
+            case 'b'-> ChessPiece.PieceType.BISHOP;
+            case 'q'-> ChessPiece.PieceType.QUEEN;
+            case 'k'-> ChessPiece.PieceType.KING;
+            case 'p'-> ChessPiece.PieceType.PAWN;
+            case 'r'-> ChessPiece.PieceType.ROOK;
+            case 'n'-> ChessPiece.PieceType.KNIGHT;
+            default -> throw new IllegalStateException("Unexpected value: " + c);
+        };
+        var newPiece = new ChessPiece(color,type);
+        return newPiece;
+    }
+
 
     /**
      * Adds a chess piece to the chessboard
@@ -61,7 +120,7 @@ public class ChessBoard {
         // convert from 1 based index system starting bottom left to 0 top-left start system
         int row = 8 - position.getRow();
         int col = position.getColumn() - 1;
-        board[row][col] = piece;
+        this.board[row][col] = piece;
     }
 
     /**
@@ -83,6 +142,14 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                if (board[i][j] != null) {
+                    board[i][j] = null;
+                }
+            }
+        }
+        this.board = this.loadBoard(startBoard);
+
     }
 }
