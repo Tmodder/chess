@@ -25,7 +25,6 @@ interface PiecesMovesCalculator {
     }
 
     //static boolean isOffBoard(board,movePosition) optional move here
-    // shift function? trying to reduce code duplication
 
     /**
      * A static method to calculate all the possible moves moving down a line(rank, file or diagonal)

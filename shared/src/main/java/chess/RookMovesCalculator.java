@@ -14,7 +14,6 @@ public class RookMovesCalculator implements PiecesMovesCalculator {
         Collection<ChessMove> moves = new ArrayList<>();
         String[] lineList = {"rank","file"};
         for (String lineType : lineList) {
-            // a whole debate in my head if moves is really going to get updated
             PiecesMovesCalculator.addLine(board, myPosition, moves, lineType);
         }
         return moves;

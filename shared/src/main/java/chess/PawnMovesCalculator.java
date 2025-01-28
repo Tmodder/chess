@@ -3,7 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
+
 
 /**
  * A class to calculate pawn moves at the given board state
@@ -30,8 +30,6 @@ public class PawnMovesCalculator implements PiecesMovesCalculator{
 
         if (!positions.isEmpty())
         {
-            //add to ChessPiece?
-            // refactor the check for promotion
             EnumSet<ChessPiece.PieceType> types = EnumSet.range(ChessPiece.PieceType.QUEEN,ChessPiece.PieceType.ROOK);
             for (ChessPosition movePosition : positions)
             {
@@ -56,24 +54,7 @@ public class PawnMovesCalculator implements PiecesMovesCalculator{
 
     public Collection<ChessPosition> capture(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor myColor)
     {
-        Collection<ChessPosition> positions = new ArrayList<>();
-        int rowShift = myColor == ChessGame.TeamColor.WHITE ? 1 : -1;
-        int moveRow = myPosition.getRow() + rowShift;
-        int curCol = myPosition.getColumn();
-        int leftMove = curCol - 1;
-        int rightMove = curCol + 1;
-        if(leftMove >= 1)
-        {
-            ChessPosition captureLeft = new ChessPosition(moveRow,leftMove);
-            positions.add(captureLeft);
-        }
-
-        if (rightMove <= 8)
-        {
-            ChessPosition captureRight = new ChessPosition(moveRow,rightMove);
-            positions.add(captureRight);
-        }
-
+        Collection<ChessPosition> positions = getCapturePositions(myPosition, myColor);
         Collection<ChessPosition> finalPositions = new ArrayList<>();
         for (ChessPosition position : positions)
         {
@@ -92,6 +73,27 @@ public class PawnMovesCalculator implements PiecesMovesCalculator{
 
 
 
+    }
+
+    private static Collection<ChessPosition> getCapturePositions(ChessPosition myPosition, ChessGame.TeamColor myColor) {
+        Collection<ChessPosition> positions = new ArrayList<>();
+        int rowShift = myColor == ChessGame.TeamColor.WHITE ? 1 : -1;
+        int moveRow = myPosition.getRow() + rowShift;
+        int curCol = myPosition.getColumn();
+        int leftMove = curCol - 1;
+        int rightMove = curCol + 1;
+        if(leftMove >= 1)
+        {
+            ChessPosition captureLeft = new ChessPosition(moveRow,leftMove);
+            positions.add(captureLeft);
+        }
+
+        if (rightMove <= 8)
+        {
+            ChessPosition captureRight = new ChessPosition(moveRow,rightMove);
+            positions.add(captureRight);
+        }
+        return positions;
     }
 
     public Collection<ChessPosition> advance(ChessBoard board, ChessPosition myPosition, boolean isDouble,
