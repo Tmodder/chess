@@ -1,7 +1,8 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.ArrayList;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -12,8 +13,8 @@ import java.util.Collection;
 public class ChessGame {
     private ChessBoard board = new ChessBoard();
     private TeamColor turnColor;
-    private ArrayList<ChessPosition> blackPositions;
-    private ArrayList<ChessPosition> whitePositions;
+    private HashSet<ChessPosition> blackPositions;
+    private HashSet<ChessPosition> whitePositions;
 
     public ChessGame() {
         this.board.resetBoard();
@@ -23,8 +24,8 @@ public class ChessGame {
 
     private void initializePositions()
     {
-        this.blackPositions = new ArrayList<>();
-        this.whitePositions = new ArrayList<>();
+        this.blackPositions = new HashSet<>();
+        this.whitePositions = new HashSet<>();
         for (int row = 1; row < 3; row++)
         {
             for (int col = 1; col < 8; col++)
@@ -81,21 +82,25 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-        if (!validMoves.contains(move))
-        {
-            throw new InvalidMoveException("Move not valid"); // will be caught in main loop
-        }
-        if(getTeamTurn() == TeamColor.WHITE)
-        {
-            setTeamTurn(TeamColor.BLACK);
-        }
-        else {
-            setTeamTurn(TeamColor.WHITE);
-        }
-        //TODO actually make move
+            Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
+            if (!validMoves.contains(move))
+            {
+                throw new InvalidMoveException("Move not valid"); // will be caught in main loop
+            }
+            ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+            board.addPiece(move.getEndPosition(), movingPiece);
 
-
+            if(getTeamTurn() == TeamColor.WHITE)
+            {
+                blackPositions.remove(move.getStartPosition());
+                blackPositions.add(move.getEndPosition());
+                setTeamTurn(TeamColor.BLACK);
+            }
+            else {
+                whitePositions.remove(move.getStartPosition());
+                whitePositions.add(move.getEndPosition());
+                setTeamTurn(TeamColor.WHITE);
+            }
     }
 
     /**
@@ -108,7 +113,32 @@ public class ChessGame {
         // for piece in opposite team pieces check possible moves
         // if there is a possible move that can take the kings square(move.end == king.pos)
         //return false
-        //TODO Add real implementation
+       Collection<ChessPosition> oppositeTeamPieces;
+
+       if (teamColor == TeamColor.WHITE)
+       {
+           oppositeTeamPieces = blackPositions;
+       }
+       else
+       {
+           oppositeTeamPieces = whitePositions;
+       }
+       for (ChessPosition pos : oppositeTeamPieces)
+       {
+           ChessPiece attackPiece = board.getPiece(pos);
+           Collection<ChessMove> attackMoves = new ArrayList<>(attackPiece.pieceMoves(board, pos));
+           for (ChessMove attack : attackMoves)
+           {
+               ChessPiece attackedPiece = board.getPiece(attack.getEndPosition());
+               if (attackedPiece != null)
+               {
+                   if (attackedPiece.getPieceType() == ChessPiece.PieceType.KING)
+                   {
+                       return true;
+                   }
+               }
+           }
+       }
         return false;
     }
 
