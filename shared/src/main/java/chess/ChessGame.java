@@ -17,25 +17,17 @@ public class ChessGame {
     private HashSet<ChessPosition> whitePositions;
 
     public ChessGame() {
-        this.board.resetBoard();
-        this.turnColor = TeamColor.WHITE;
-        initializePositions();
+       this.board.resetBoard();
+       this.turnColor = TeamColor.WHITE;
+       initializePositions();
     }
 
     private void initializePositions()
     {
         this.blackPositions = new HashSet<>();
         this.whitePositions = new HashSet<>();
-        for (int row = 1; row < 3; row++)
-        {
-            for (int col = 1; col < 8; col++)
-            {
-                ChessPosition posWhite = new ChessPosition(row,col);
-                ChessPosition posBlack = new ChessPosition(row + 6,col);
-                this.whitePositions.add(posWhite);
-                this.blackPositions.add(posBlack);
-            }
-        }
+        this.blackPositions = board.countTeamPieces(TeamColor.BLACK);
+        this.whitePositions = board.countTeamPieces(TeamColor.WHITE);
     }
 
     /**
@@ -89,6 +81,7 @@ public class ChessGame {
             }
             ChessPiece movingPiece = board.getPiece(move.getStartPosition());
             board.addPiece(move.getEndPosition(), movingPiece);
+            board.addPiece(move.getStartPosition(), null);
 
             if(getTeamTurn() == TeamColor.WHITE)
             {
@@ -165,8 +158,8 @@ public class ChessGame {
 
     public boolean noPossibleMove(TeamColor teamColor)
     {
-        return false;
         //TODO add real implementation
+        return false;
     }
 
 
@@ -177,6 +170,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         this.board = board;
+        this.initializePositions();
     }
 
     /**
