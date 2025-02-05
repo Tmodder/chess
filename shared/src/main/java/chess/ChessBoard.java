@@ -25,6 +25,9 @@ public class ChessBoard {
             """;
     public ChessBoard() {
     }
+    public ChessBoard(ChessBoard other) {
+       this.board = loadBoard(other.toString());
+    }
 
 
     @Override
@@ -43,7 +46,7 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        String output = "ChessBoard{ board = \n";
+        String output = "";
         ChessPiece piece = null;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
