@@ -91,12 +91,21 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+            ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+            if (movingPiece == null)
+            {
+                throw new InvalidMoveException("Move not valid");
+            }
+            if (movingPiece.getTeamColor() != getTeamTurn())
+            {
+                throw new InvalidMoveException("Move not valid");
+            }
             Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
             if (!validMoves.contains(move))
             {
                 throw new InvalidMoveException("Move not valid"); // will be caught in main loop
             }
-            ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+
             if (move.getPromotionPiece() != null)
             {
                 movingPiece = new ChessPiece(movingPiece.getTeamColor(), move.getPromotionPiece());
@@ -181,8 +190,17 @@ public class ChessGame {
 
     public boolean noPossibleMove(TeamColor teamColor)
     {
-        //TODO add real implementation
-        return false;
+        countPositions(this.board);
+        Collection<ChessPosition> teamSpots = teamColor == TeamColor.WHITE ? whitePositions : blackPositions;
+
+        for (ChessPosition spot : teamSpots)
+        {
+            if (!validMoves(spot).isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
 
