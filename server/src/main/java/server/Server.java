@@ -11,9 +11,14 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-        Spark.init();
-
+        //This line initializes the server and can be removed once you have a functioning endpoint
+       // Spark.init();
+        Spark.delete("/db", new Route() {
+            public Object handle(Request req, Response res)
+            {
+                //delete crap
+                return null;
+            }});
         Spark.awaitInitialization();
         return Spark.port();
     }
