@@ -13,12 +13,9 @@ public class Server {
 
         //This line initializes the server and can be removed once you have a functioning endpoint
        // Spark.init();
-        Spark.delete("/db", new Route() {
-            public Object handle(Request req, Response res)
-            {
-                //delete crap
-                return null;
-            }});
+        Spark.delete("/db", (req, res) -> "{\"name\":\"John\", \"age\":30, \"car\":null}");
+        //do the same for post and each method repeating if there is a different path
+
         Spark.awaitInitialization();
         return Spark.port();
     }
