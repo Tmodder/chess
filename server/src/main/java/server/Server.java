@@ -29,9 +29,5 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private static <T> T getBody(Request request, Class<T> outputClass)
-    {
-        return new Gson().fromJson(request.body(),outputClass);
 
-    }
 }

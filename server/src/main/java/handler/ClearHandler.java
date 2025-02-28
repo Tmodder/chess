@@ -1,4 +1,4 @@
 package handler;
 
-public class ClearHandler {
+public class ClearHandler extends Handler{
 }
