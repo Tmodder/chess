@@ -15,6 +15,8 @@ public class Server {
        // Spark.init();
         var userHandler = new UserHandler();
         Spark.post("/user", userHandler::register);
+        Spark.post("/session", userHandler::login);
+        Spark.delete("/session", userHandler::logout);
         Spark.delete("/db", (req, res) -> "{\"name\":\"John\", \"age\":30, \"car\":null}");
         //do the same for post and each method repeating if there is a different path
 
@@ -25,5 +27,11 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private static <T> T getBody(Request request, Class<T> outputClass)
+    {
+        return new Gson().fromJson(request.body(),outputClass);
+
     }
 }

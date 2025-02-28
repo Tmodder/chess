@@ -9,4 +9,14 @@ public class UserHandler {
         return response;
     }
 
+    public Object login (Request request, Response response)
+    {
+        return response;
+    }
+
+    public Object logout (Request resquest, Response response)
+    {
+
+    }
+
 }
