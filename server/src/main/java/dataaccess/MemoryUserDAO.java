@@ -5,7 +5,8 @@ import model.User;
 import java.util.HashSet;
 
 public class MemoryUserDAO implements UserDAO{
-    private HashSet<User> userDatabase = new HashSet<>();
+    private static final HashSet<User> userDatabase = new HashSet<>();
+
     @Override
     public void createUser(String username, String password, String email) {
         var newUser = new User(username, password, email);
