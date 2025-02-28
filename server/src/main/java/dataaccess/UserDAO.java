@@ -3,7 +3,7 @@ import model.User;
 
 public interface UserDAO {
 
-    void createUser(String username, String password, String email);
+    void createUser(User newUser);
     User findUser(String username);
-    void deleteUser(String username)  throws DataAccessException;
+    void clearUsers();
 }

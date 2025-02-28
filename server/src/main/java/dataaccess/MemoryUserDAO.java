@@ -5,17 +5,16 @@ import model.User;
 import java.util.HashSet;
 
 public class MemoryUserDAO implements UserDAO{
-    private static final HashSet<User> userDatabase = new HashSet<>();
+    private static final HashSet<User> database = new HashSet<>();
 
     @Override
-    public void createUser(String username, String password, String email) {
-        var newUser = new User(username, password, email);
-        userDatabase.add(newUser);
+    public void createUser(User newUser) {
+        database.add(newUser);
     }
 
     @Override
     public User findUser(String username) {
-        for (User i : userDatabase)
+        for (User i : database)
         {
             if (i.username().equals(username))
             {
@@ -25,12 +24,8 @@ public class MemoryUserDAO implements UserDAO{
         return null;
     }
 
-    @Override
-    public void deleteUser(String username) throws DataAccessException {
-        User u = findUser(username);
-        if (u != null)
-        {
-            userDatabase.remove(u);
-        }
+    public void clearUsers()
+    {
+        database.clear();
     }
 }
