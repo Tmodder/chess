@@ -1,16 +1,10 @@
 package service;
 
-import RequestResult.LoginRequest;
-import RequestResult.LoginResult;
-import RequestResult.RegisterRequest;
-import RequestResult.RegisterResult;
-import dataaccess.AuthDAO;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
+import RequestResult.*;
+import dataaccess.*;
 import model.User;
 import model.Authtoken;
 import java.util.UUID;
-import dataaccess.UserDAO;
 
 public class UserService {
     private static final UserDAO userDatabase = new MemoryUserDAO();
@@ -43,6 +37,17 @@ public class UserService {
         return null;
 
     }
+
+    public static void logoutService(LogoutRequest req) throws DataAccessException {
+        var token = authDatabase.findAuth(req.authToken());
+        if (token != null)
+        {
+            authDatabase.deleteAuth(token);
+        }
+        return;
+
+    }
+
 
 
     public static String generateToken() {
