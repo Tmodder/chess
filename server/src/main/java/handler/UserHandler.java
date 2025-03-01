@@ -1,5 +1,6 @@
 package handler;
 
+import RequestResult.LoginRequest;
 import RequestResult.RegisterRequest;
 import service.UserService;
 import spark.Request;
@@ -10,18 +11,31 @@ public class UserHandler extends Handler {
     {
         var registerReq = getBody(request, RegisterRequest.class);
         var registerResult = UserService.registerService(registerReq);
-        return resultToJson(registerResult);
+        String json = resultToJson(registerResult);
+        if (json == null)
+        {
+            response.status(500);
+        }
+        return json;
 
     }
 
     public Object login (Request request, Response response)
     {
-        return response;
+       var loginReq = getBody(request, LoginRequest.class);
+       var loginResult = UserService.loginService(loginReq);
+       String json = resultToJson(loginResult);
+        if (json == null)
+        {
+            response.status(500);
+        }
+        return json;
     }
 
     public Object logout (Request resquest, Response response)
     {
-        return response;
+        //
+        return null;
     }
 
 }
