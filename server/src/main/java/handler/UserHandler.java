@@ -36,7 +36,7 @@ public class UserHandler extends Handler {
 
     public Object logout (Request request, Response response) throws DataAccessException {
         UserService.logoutService(new LogoutRequest(request.headers("authorization")));
-        return null;
+        return "null";
     }
 
 }

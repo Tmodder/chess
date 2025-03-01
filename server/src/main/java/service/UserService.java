@@ -44,8 +44,6 @@ public class UserService {
         {
             authDatabase.deleteAuth(token);
         }
-        return;
-
     }
 
 
