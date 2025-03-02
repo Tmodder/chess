@@ -9,4 +9,6 @@ public interface AuthDAO {
     Authtoken findAuth(String authString);
 
     void deleteAuth(Authtoken authToken) throws DataAccessException;
+
+    void clear();
 }

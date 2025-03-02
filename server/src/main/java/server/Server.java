@@ -1,5 +1,6 @@
 package server;
 import handler.*;
+import service.ClearService;
 import spark.*;
 import com.google.gson.Gson;
 public class Server {
@@ -14,10 +15,11 @@ public class Server {
         //This line initializes the server and can be removed once you have a functioning endpoint
        // Spark.init();
         var userHandler = new UserHandler();
+        var clearHandler = new ClearHandler();
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
         Spark.delete("/session", userHandler::logout);
-        Spark.delete("/db", (req, res) -> "{\"name\":\"John\", \"age\":30, \"car\":null}");
+        Spark.delete("/db",clearHandler::clear);
         //do the same for post and each method repeating if there is a different path
 
         Spark.awaitInitialization();
