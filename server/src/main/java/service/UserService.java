@@ -7,8 +7,8 @@ import model.Authtoken;
 import java.util.UUID;
 
 public class UserService {
-    private static final UserDAO userDatabase = new MemoryUserDAO();
-    private static final AuthDAO authDatabase = new MemoryAuthDAO();
+    private static final UserDAO userDatabase = UserDAO.makeInstance();
+    private static final AuthDAO authDatabase = AuthDAO.makeInstance();
     public static RegisterResult registerService(RegisterRequest req)
     {
         if(userDatabase.findUser(req.username()) == null)

@@ -1,5 +1,9 @@
 package dataaccess;
 
 public interface GameDAO {
-    public void clear();
+    void clear();
+
+     static GameDAO makeInstance()  {
+        return MemoryGameDAO.getInstance();
+    }
 }

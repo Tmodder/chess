@@ -11,4 +11,8 @@ public interface AuthDAO {
     void deleteAuth(Authtoken authToken) throws DataAccessException;
 
     void clear();
+
+    static AuthDAO makeInstance()  {
+        return MemoryAuthDAO.getInstance();
+    }
 }

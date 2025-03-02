@@ -5,8 +5,19 @@ import model.User;
 import java.util.HashSet;
 
 public class MemoryUserDAO implements UserDAO{
-    private static final HashSet<User> database = new HashSet<>();
+    private final HashSet<User> database = new HashSet<>();
+    private static MemoryUserDAO instance;
 
+    //make it private to force the use of singleton pattern
+    private MemoryUserDAO() {}
+
+    public static synchronized MemoryUserDAO getInstance() {
+        if (instance == null)
+        {
+           instance =  new MemoryUserDAO();
+        }
+        return instance;
+    }
     @Override
     public void createUser(User newUser) {
         database.add(newUser);
