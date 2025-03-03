@@ -16,10 +16,12 @@ public class Server {
        // Spark.init();
         var userHandler = new UserHandler();
         var clearHandler = new ClearHandler();
+        var gameHandler = new GameHandler();
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
         Spark.delete("/session", userHandler::logout);
         Spark.delete("/db",clearHandler::clear);
+        Spark.get("/game", gameHandler::listGames);
         //do the same for post and each method repeating if there is a different path
 
         Spark.awaitInitialization();
