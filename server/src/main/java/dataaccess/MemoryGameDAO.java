@@ -2,9 +2,12 @@ package dataaccess;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+
 import model.Game;
 public class MemoryGameDAO implements GameDAO{
     private final HashMap<Integer,Game> database = new HashMap<>();
+    private int gameCounter = 0;
     private static MemoryGameDAO instance;
 
     private MemoryGameDAO() {}
@@ -18,13 +21,17 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     //C
-    public void createGame(Game newGame)
+    public int createGame(Game newGame)
     {
-        database.put(newGame.gameID(),newGame);
+        String name = newGame.gameName();
+        int gameID = this.gameCounter + 1000;
+        this.gameCounter += 1;
+        database.put(newGame.gameID(),new Game(gameID, null,null,name, newGame.game()));
+        return newGame.gameID();
     }
 
     //R
-    public Game getGame(Integer gameID)
+    public Game getGame(int gameID)
     {
         return database.get(gameID);
     }

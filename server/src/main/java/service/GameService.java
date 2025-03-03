@@ -1,10 +1,14 @@
 package service;
 
+import RequestResult.CreateGameRequest;
+import RequestResult.CreateGameResult;
 import RequestResult.ListGamesRequest;
 import RequestResult.ListGamesResult;
+import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import model.Game;
 
 public class GameService {
     private static final UserDAO userDatabase = UserDAO.makeInstance();
@@ -18,5 +22,12 @@ public class GameService {
         return new ListGamesResult(gameDatabase.getGamesList());
     }
 
+    public static CreateGameResult createGame(CreateGameRequest req)
+    {
+        var token = authDatabase.findAuth(req.authToken());
+        if (token == null) return null;
+        var newGame = new Game(-1,null,null,req.gameName(),new ChessGame());
+        return new CreateGameResult(gameDatabase.createGame(newGame));
+    }
 
 }

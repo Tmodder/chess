@@ -1,4 +1,5 @@
 package handler;
+import RequestResult.CreateGameRequest;
 import RequestResult.ListGamesRequest;
 import RequestResult.ListGamesResult;
 import service.GameService;
@@ -10,6 +11,12 @@ public class GameHandler extends Handler{
         String authToken = request.headers("authorization");
         ListGamesResult result =  GameService.listGames(new ListGamesRequest(authToken));
         return resultToJson(result);
+    }
+
+    public Object createGame(Request request, Response response)
+    {
+        var body = getBodyWithAuth(request, CreateGameRequest.class);
+        return resultToJson(GameService.createGame(body));
     }
 
 }

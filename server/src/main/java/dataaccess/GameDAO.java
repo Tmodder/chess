@@ -10,9 +10,9 @@ public interface GameDAO {
      static GameDAO makeInstance()  {
         return MemoryGameDAO.getInstance();
     }
-    void createGame(Game newGame);
+    int createGame(Game newGame);
 
-    Game getGame(Integer gameID);
+    Game getGame(int gameID);
 
     ArrayList<Game> getGamesList();
 
