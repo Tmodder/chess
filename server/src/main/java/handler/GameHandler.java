@@ -1,5 +1,6 @@
 package handler;
 import RequestResult.CreateGameRequest;
+import RequestResult.JoinGameRequest;
 import RequestResult.ListGamesRequest;
 import RequestResult.ListGamesResult;
 import service.GameService;
@@ -20,5 +21,14 @@ public class GameHandler extends Handler{
         var requestWithHeader = new CreateGameRequest(authToken,body.gameName());
         return resultToJson(GameService.createGame(requestWithHeader));
     }
+
+    public Object joinGame(Request request, Response response)
+    {
+        var body = getBody(request, JoinGameRequest.class);
+        String authToken = request.headers("authorization");
+        var requestWithHeader = new JoinGameRequest(authToken,body.playerColor(),body.gameID());
+        return GameService.joinGame(requestWithHeader);
+    }
+
 
 }

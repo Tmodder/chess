@@ -16,5 +16,5 @@ public interface GameDAO {
 
     ArrayList<Game> getGamesList();
 
-    void joinGame();
+    void addPlayerToGame(String color,String username, Game game);
 }

@@ -27,4 +27,17 @@ public class GameService {
         return new CreateGameResult(gameDatabase.createGame(newGame));
     }
 
+    public static String joinGame(JoinGameRequest req)
+    {
+        var token = authDatabase.findAuth(req.authToken());
+        if (token == null) return null;
+        var gameToJoin = gameDatabase.getGame(req.gameID());
+        if (gameToJoin == null) return null;
+        if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername().isEmpty())
+            gameDatabase.addPlayerToGame("BLACK",token.username(),gameToJoin);
+        else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername().isEmpty())
+            gameDatabase.addPlayerToGame("WHITE",token.username(),gameToJoin);
+        return "";
+    }
+
 }
