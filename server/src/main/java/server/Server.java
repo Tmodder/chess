@@ -24,9 +24,6 @@ public class Server {
         Spark.delete("/session", userHandler::logout);
         Spark.delete("/db",clearHandler::clear);
         Spark.get("/game", gameHandler::listGames);
-        //do the same for post and each method repeating if there is a different path
-
-        Spark.awaitInitialization();
         return Spark.port();
     }
 
