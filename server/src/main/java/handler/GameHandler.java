@@ -15,8 +15,10 @@ public class GameHandler extends Handler{
 
     public Object createGame(Request request, Response response)
     {
-        var body = getBodyWithAuth(request, CreateGameRequest.class);
-        return resultToJson(GameService.createGame(body));
+        var body = getBody(request, CreateGameRequest.class);
+        String authToken = request.headers("authorization");
+        var requestWithHeader = new CreateGameRequest(authToken,body.gameName());
+        return resultToJson(GameService.createGame(requestWithHeader));
     }
 
 }

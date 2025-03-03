@@ -26,8 +26,8 @@ public class MemoryGameDAO implements GameDAO{
         String name = newGame.gameName();
         int gameID = this.gameCounter + 1000;
         this.gameCounter += 1;
-        database.put(newGame.gameID(),new Game(gameID, null,null,name, newGame.game()));
-        return newGame.gameID();
+        database.put(gameID,new Game(gameID, "","", name, newGame.game()));
+        return gameID;
     }
 
     //R

@@ -1,9 +1,6 @@
 package service;
 
-import RequestResult.CreateGameRequest;
-import RequestResult.CreateGameResult;
-import RequestResult.ListGamesRequest;
-import RequestResult.ListGamesResult;
+import RequestResult.*;
 import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
@@ -19,7 +16,7 @@ public class GameService {
     {
         var token = authDatabase.findAuth(req.authToken());
         if (token == null) return null;
-        return new ListGamesResult(gameDatabase.getGamesList());
+        return ListGamesResult.convertGameModelToResult(gameDatabase.getGamesList());
     }
 
     public static CreateGameResult createGame(CreateGameRequest req)
