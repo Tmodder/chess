@@ -1,25 +1,18 @@
 package service;
 
-import RequestResult.CreateGameRequest;
-import RequestResult.JoinGameRequest;
-import RequestResult.ListGamesRequest;
-import RequestResult.RegisterRequest;
+import requestandresult.CreateGameRequest;
+import requestandresult.JoinGameRequest;
+import requestandresult.ListGamesRequest;
+import requestandresult.RegisterRequest;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import model.Game;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import service.GameService;
-import service.ServiceError;
-import service.UserService;
 
 public class GameServiceTests {
-    private static final UserDAO userDatabase = UserDAO.makeInstance();
-    private static final AuthDAO authDatabase = AuthDAO.makeInstance();
     private static final GameDAO gameDatabase = GameDAO.makeInstance();
     private static String authToken;
     private final String game1 = "game1";

@@ -1,8 +1,8 @@
 package handler;
 
-import RequestResult.LoginRequest;
-import RequestResult.LogoutRequest;
-import RequestResult.RegisterRequest;
+import requestandresult.LoginRequest;
+import requestandresult.LogoutRequest;
+import requestandresult.RegisterRequest;
 import dataaccess.DataAccessException;
 import service.ServiceError;
 import service.UserService;

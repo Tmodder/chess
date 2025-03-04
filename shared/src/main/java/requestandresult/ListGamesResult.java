@@ -1,4 +1,4 @@
-package RequestResult;
+package requestandresult;
 import model.Game;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package service;
 
-import RequestResult.CreateGameRequest;
-import RequestResult.RegisterRequest;
+import requestandresult.CreateGameRequest;
+import requestandresult.RegisterRequest;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
@@ -10,17 +10,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 
 public class ClearServiceTest {
-    private static final UserDAO userDatabase = UserDAO.makeInstance();
-    private static final AuthDAO authDatabase = AuthDAO.makeInstance();
-    private static final GameDAO gameDatabase = GameDAO.makeInstance();
+    private static final UserDAO USER_DATABASE = UserDAO.makeInstance();
+    private static final AuthDAO AUTH_DATABASE = AuthDAO.makeInstance();
+    private static final GameDAO GAME_DATABASE = GameDAO.makeInstance();
     static String authToken;
     static String username = "bob";
     @BeforeAll
     public static void fillDb()
     {
-        userDatabase.clear();
-        authDatabase.clear();
-        gameDatabase.clear();
+        USER_DATABASE.clear();
+        AUTH_DATABASE.clear();
+        GAME_DATABASE.clear();
         var registerRes = UserService.registerService(new RegisterRequest(username,"password","email"));
         authToken = registerRes.authToken();
         GameService.createGame(new CreateGameRequest(authToken,"bobs game"));
@@ -30,8 +30,8 @@ public class ClearServiceTest {
     public void clearFullDb()
     {
         ClearService.runClear();
-        assertEquals(0,gameDatabase.getGamesList().size());
-        assertNull(authDatabase.findAuth(authToken));
-        assertNull(userDatabase.findUser(username));
+        assertEquals(0, GAME_DATABASE.getGamesList().size());
+        assertNull(AUTH_DATABASE.findAuth(authToken));
+        assertNull(USER_DATABASE.findUser(username));
     }
 }

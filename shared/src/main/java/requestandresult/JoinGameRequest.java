@@ -1,4 +1,4 @@
-package RequestResult;
+package requestandresult;
 
 public record JoinGameRequest(String authToken, String playerColor, int gameID) {
 }

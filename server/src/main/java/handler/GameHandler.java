@@ -1,8 +1,8 @@
 package handler;
-import RequestResult.CreateGameRequest;
-import RequestResult.JoinGameRequest;
-import RequestResult.ListGamesRequest;
-import RequestResult.ListGamesResult;
+import requestandresult.CreateGameRequest;
+import requestandresult.JoinGameRequest;
+import requestandresult.ListGamesRequest;
+import requestandresult.ListGamesResult;
 import service.GameService;
 import service.ServiceError;
 import spark.Response;
