@@ -1,4 +1,4 @@
-package passoff.service;
+package service;
 
 import RequestResult.CreateGameRequest;
 import RequestResult.JoinGameRequest;
