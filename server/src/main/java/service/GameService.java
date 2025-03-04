@@ -30,11 +30,17 @@ public class GameService {
         authorizeRequest(req.authToken());
         var token = authDatabase.findAuth(req.authToken());
         var gameToJoin = gameDatabase.getGame(req.gameID());
-        if (gameToJoin == null) return null;
-        if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername().isEmpty())
+        if (gameToJoin == null)
+            throw new ServiceError("Error: bad request");
+        else if (req.playerColor() == null)
+            throw new ServiceError("Error: bad request");
+        else if (!(req.playerColor().equals("BLACK") || req.playerColor().equals("WHITE")))
+            throw new ServiceError("Error: bad request");
+        else if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername().equals("null"))
             gameDatabase.addPlayerToGame("BLACK",token.username(),gameToJoin);
-        else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername().isEmpty())
+        else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername().equals("null"))
             gameDatabase.addPlayerToGame("WHITE",token.username(),gameToJoin);
+        else throw new ServiceError("Error: already taken");
         return "";
     }
 

@@ -14,6 +14,7 @@ public class GameHandler extends Handler{
         {
             String authToken = request.headers("authorization");
             ListGamesResult result =  GameService.listGames(new ListGamesRequest(authToken));
+            if (result == null) return "";
             return resultToJson(result);
         }
         catch (ServiceError error)
@@ -70,6 +71,14 @@ public class GameHandler extends Handler{
             if (message.equals("Error: unauthorized"))
             {
                 response.status(401);
+            }
+            else if (message.equals("Error: already taken"))
+            {
+                response.status(403);
+            }
+            else if (message.equals("Error: bad request"))
+            {
+                response.status(400);
             }
             else {
                 response.status(500);
