@@ -9,10 +9,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 
-import service.ClearService;
-import service.GameService;
-import service.UserService;
-
 public class ClearServiceTest {
     private static final UserDAO userDatabase = UserDAO.makeInstance();
     private static final AuthDAO authDatabase = AuthDAO.makeInstance();
@@ -22,12 +18,15 @@ public class ClearServiceTest {
     @BeforeAll
     public static void fillDb()
     {
+        userDatabase.clear();
+        authDatabase.clear();
+        gameDatabase.clear();
         var registerRes = UserService.registerService(new RegisterRequest(username,"password","email"));
         authToken = registerRes.authToken();
         GameService.createGame(new CreateGameRequest(authToken,"bobs game"));
     }
-    @Test
 
+    @Test
     public void clearFullDb()
     {
         ClearService.runClear();

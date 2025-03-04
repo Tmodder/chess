@@ -20,6 +20,8 @@ public class UserServiceTests {
     @Order(1)
     public void registerAddsUserToDb()
     {
+        userDatabase.clear();
+        authDatabase.clear();
         var result = UserService.registerService(new RegisterRequest(username,password,email));
         assertNotNull(userDatabase.findUser(username));
     }
@@ -36,6 +38,8 @@ public class UserServiceTests {
     @Order(3)
     public void loginAddsUserToAuthDb()
     {
+        userDatabase.clear();
+        authDatabase.clear();
         var res = UserService.registerService(new RegisterRequest(username,password,email));
         var req = new LoginRequest(username, password);
         var result = UserService.loginService(req);
