@@ -36,9 +36,9 @@ public class GameService {
             throw new ServiceError("Error: bad request");
         else if (!(req.playerColor().equals("BLACK") || req.playerColor().equals("WHITE")))
             throw new ServiceError("Error: bad request");
-        else if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername().equals("null"))
+        else if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername() == null)
             gameDatabase.addPlayerToGame("BLACK",token.username(),gameToJoin);
-        else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername().equals("null"))
+        else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername() == null)
             gameDatabase.addPlayerToGame("WHITE",token.username(),gameToJoin);
         else throw new ServiceError("Error: already taken");
         return "";
