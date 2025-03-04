@@ -65,7 +65,9 @@ public class GameService {
     {
         var token = AUTH_DATABASE.findAuth(authToken);
         if (token == null)
+        {
             throw new ServiceError("Error: unauthorized");
+        }
 
     }
 

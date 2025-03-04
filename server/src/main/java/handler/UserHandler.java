@@ -21,18 +21,7 @@ public class UserHandler extends Handler {
 
         catch (ServiceError error)
         {
-            String message = error.getMessage();
-            if (message.equals("Error: bad request"))
-            {
-                response.status(400);
-            }
-            else if (message.equals("Error: already taken")) {
-                response.status(403);
-            }
-            else {
-                response.status(500);
-            }
-            return exceptionToJson(error);
+            return ErrorHandler.handleServiceError(error,response);
         }
 
 
@@ -48,14 +37,7 @@ public class UserHandler extends Handler {
         }
         catch (ServiceError error)
         {
-            String message = error.getMessage();
-            if (message.equals("Error: unauthorized"))
-            {
-                response.status(401);
-            } else {
-                response.status(500);
-            }
-            return exceptionToJson(error);
+            return ErrorHandler.handleServiceError(error,response);
         }
     }
 
@@ -64,16 +46,9 @@ public class UserHandler extends Handler {
         {
             UserService.logoutService(new LogoutRequest(request.headers("authorization")));
             return "null";
-        } catch (ServiceError e) {
-            String message = e.getMessage();
-            if (message.equals("Error: unauthorized"))
-            {
-                response.status(401);
-            }
-            else {
-                response.status(500);
-            }
-            return exceptionToJson(e);
+        } catch (ServiceError error) {
+
+            return ErrorHandler.handleServiceError(error,response);
         }
     }
 

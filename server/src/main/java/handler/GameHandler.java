@@ -23,15 +23,8 @@ public class GameHandler extends Handler{
         }
         catch (ServiceError error)
         {
-            String message = error.getMessage();
-            if (message.equals("Error: unauthorized"))
-            {
-                response.status(401);
-            }
-            else {
-                response.status(500);
-            }
-            return exceptionToJson(error);
+
+            return ErrorHandler.handleServiceError(error,response);
         }
 
     }
@@ -56,7 +49,7 @@ public class GameHandler extends Handler{
             else {
                 response.status(500);
             }
-            return exceptionToJson(error);
+            return ErrorHandler.handleServiceError(error,response);
         }
     }
 
@@ -71,23 +64,7 @@ public class GameHandler extends Handler{
 
         catch (ServiceError error)
         {
-            String message = error.getMessage();
-            if (message.equals("Error: unauthorized"))
-            {
-                response.status(401);
-            }
-            else if (message.equals("Error: already taken"))
-            {
-                response.status(403);
-            }
-            else if (message.equals("Error: bad request"))
-            {
-                response.status(400);
-            }
-            else {
-                response.status(500);
-            }
-            return exceptionToJson(error);
+            return ErrorHandler.handleServiceError(error,response);
         }
     }
 

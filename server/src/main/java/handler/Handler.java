@@ -19,11 +19,5 @@ public class Handler {
         return new Gson().toJson(result);
     }
 
-    public static String exceptionToJson(ServiceError error)
-    {
-        Gson gson = new Gson();
-        HashMap<String,String> errorMap = new HashMap<>();
-        errorMap.put("message",error.getMessage());
-        return gson.toJson(errorMap);
-    }
+
 }
