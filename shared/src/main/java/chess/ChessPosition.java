@@ -47,17 +47,6 @@ public class ChessPosition {
                 ", col=" + col +
                 '}';
     }
-    /**
-     * @return copy of this ChessPosition
-     * @param position ChessPosition  object to copy onto
-     *
-     */
-    public ChessPosition copy(ChessPosition position)
-    {
-        position.row = this.row;
-        position.col = this.col;
-        return position;
-    }
 
     /**
      * @return which row this position is in

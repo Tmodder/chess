@@ -14,7 +14,11 @@ public class GameHandler extends Handler{
         {
             String authToken = request.headers("authorization");
             ListGamesResult result =  GameService.listGames(new ListGamesRequest(authToken));
-            if (result == null) return "";
+            if (result == null)
+            {
+                return "";
+            }
+
             return resultToJson(result);
         }
         catch (ServiceError error)

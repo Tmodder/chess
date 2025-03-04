@@ -25,7 +25,8 @@ public class UserHandler extends Handler {
             if (message.equals("Error: bad request"))
             {
                 response.status(400);
-            } else if (message.equals("Error: already taken")) {
+            }
+            else if (message.equals("Error: already taken")) {
                 response.status(403);
             }
             else {

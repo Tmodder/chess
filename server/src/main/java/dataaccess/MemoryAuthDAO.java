@@ -19,7 +19,10 @@ public class MemoryAuthDAO implements AuthDAO{
     public Authtoken findAuth(String authString) {
         for (Authtoken t : database) {
             if (t.authToken().equals(authString))
+            {
                 return t;
+            }
+
         }
         return null;
     }

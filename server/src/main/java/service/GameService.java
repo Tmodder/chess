@@ -31,16 +31,33 @@ public class GameService {
         var token = AUTH_DATABASE.findAuth(req.authToken());
         var gameToJoin = GAME_DATABASE.getGame(req.gameID());
         if (gameToJoin == null)
+        {
             throw new ServiceError("Error: bad request");
+        }
         else if (req.playerColor() == null)
+        {
             throw new ServiceError("Error: bad request");
+        }
+
         else if (!(req.playerColor().equals("BLACK") || req.playerColor().equals("WHITE")))
+        {
             throw new ServiceError("Error: bad request");
+        }
+
         else if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername() == null)
+        {
             GAME_DATABASE.addPlayerToGame("BLACK",token.username(),gameToJoin);
+        }
+
         else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername() == null)
+        {
             GAME_DATABASE.addPlayerToGame("WHITE",token.username(),gameToJoin);
-        else throw new ServiceError("Error: already taken");
+        }
+
+        else
+        {
+            throw new ServiceError("Error: already taken");
+        }
         return "";
     }
 

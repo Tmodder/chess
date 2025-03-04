@@ -4,16 +4,14 @@ import requestandresult.CreateGameRequest;
 import requestandresult.JoinGameRequest;
 import requestandresult.ListGamesRequest;
 import requestandresult.RegisterRequest;
-import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
-import dataaccess.UserDAO;
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class GameServiceTests {
-    private static final GameDAO gameDatabase = GameDAO.makeInstance();
+    private static final GameDAO GAME_DATABASE = GameDAO.makeInstance();
     private static String authToken;
     private final String game1 = "game1";
     private final String game2 = "game2";
@@ -34,7 +32,7 @@ public class GameServiceTests {
     public void createGameAddsToDb()
     {
         var result = GameService.createGame(new CreateGameRequest(authToken,game1));
-        assertNotNull(gameDatabase.getGame(result.gameID()));
+        assertNotNull(GAME_DATABASE.getGame(result.gameID()));
     }
 
     @Test
@@ -51,14 +49,14 @@ public class GameServiceTests {
         var createGameResult = GameService.createGame(new CreateGameRequest(authToken,game1));
         int gameId = createGameResult.gameID();
         var joinGameResult = GameService.joinGame(new JoinGameRequest(authToken,"WHITE",gameId));
-        assertEquals("bob",gameDatabase.getGame(gameId).whiteUsername());
+        assertEquals("bob", GAME_DATABASE.getGame(gameId).whiteUsername());
     }
 
     @Test
     @Order(4)
     public void joinGameasWhiteAgainFails()
     {
-        gameDatabase.clear();
+        GAME_DATABASE.clear();
         var createGameResult = GameService.createGame(new CreateGameRequest(authToken,game1));
         int gameId = createGameResult.gameID();
         var joinGameReq = new JoinGameRequest(authToken,"WHITE",gameId);
@@ -70,9 +68,9 @@ public class GameServiceTests {
     @Order(5)
     public void listGamesWithNoGames()
     {
-        gameDatabase.clear();
+        GAME_DATABASE.clear();
         assertNotNull(GameService.listGames(new ListGamesRequest(authToken)));
-        assertEquals(0, gameDatabase.getGamesList().size());
+        assertEquals(0, GAME_DATABASE.getGamesList().size());
 
     }
 
@@ -80,11 +78,11 @@ public class GameServiceTests {
     @Order(6)
     public void listGamesWithMutipleGames()
     {
-        gameDatabase.clear();
+        GAME_DATABASE.clear();
         var createGameResultOne = GameService.createGame(new CreateGameRequest(authToken,game1));
         var createGameResultTwo = GameService.createGame(new CreateGameRequest(authToken, game2));
-        var gameOneData = gameDatabase.getGame(createGameResultOne.gameID());
-        var gameTwoData = gameDatabase.getGame(createGameResultTwo.gameID());
+        var gameOneData = GAME_DATABASE.getGame(createGameResultOne.gameID());
+        var gameTwoData = GAME_DATABASE.getGame(createGameResultTwo.gameID());
         var listResult = GameService.listGames(new ListGamesRequest(authToken));
         assertEquals(2,listResult.games().size());
     }
