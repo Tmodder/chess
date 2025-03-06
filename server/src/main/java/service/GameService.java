@@ -4,28 +4,31 @@ import requestandresult.*;
 import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
-import dataaccess.UserDAO;
 import model.Game;
 
 public class GameService {
-    private static final UserDAO USER_DATABASE = UserDAO.makeInstance();
-    private static final AuthDAO AUTH_DATABASE = AuthDAO.makeInstance();
-    private static final GameDAO GAME_DATABASE = GameDAO.makeInstance();
+    private final AuthDAO AUTH_DATABASE;
+    private final GameDAO GAME_DATABASE;
 
-    public static ListGamesResult listGames(ListGamesRequest req) throws ServiceError
+    public GameService(AuthDAO AUTH_DATABASE, GameDAO GAME_DATABASE) {
+        this.AUTH_DATABASE = AUTH_DATABASE;
+        this.GAME_DATABASE = GAME_DATABASE;
+    }
+
+    public ListGamesResult listGames(ListGamesRequest req) throws ServiceError
     {
         authorizeRequest(req.authToken());
         return ListGamesResult.convertGameModelToResult(GAME_DATABASE.getGamesList());
     }
 
-    public static CreateGameResult createGame(CreateGameRequest req) throws ServiceError
+    public CreateGameResult createGame(CreateGameRequest req) throws ServiceError
     {
         authorizeRequest(req.authToken());
         var newGame = new Game(-1,null,null,req.gameName(),new ChessGame());
         return new CreateGameResult(GAME_DATABASE.createGame(newGame));
     }
 
-    public static String joinGame(JoinGameRequest req) throws ServiceError
+    public String joinGame(JoinGameRequest req) throws ServiceError
     {
         authorizeRequest(req.authToken());
         var token = AUTH_DATABASE.findAuth(req.authToken());
@@ -61,7 +64,7 @@ public class GameService {
         return "";
     }
 
-    private static void authorizeRequest(String authToken) throws ServiceError
+    private void authorizeRequest(String authToken) throws ServiceError
     {
         var token = AUTH_DATABASE.findAuth(authToken);
         if (token == null)

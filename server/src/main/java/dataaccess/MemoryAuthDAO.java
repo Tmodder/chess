@@ -6,9 +6,8 @@ import java.util.HashSet;
 
 public class MemoryAuthDAO implements AuthDAO{
     private final HashSet<Authtoken> database = new HashSet<>();
-    private static MemoryAuthDAO instance;
 
-    private MemoryAuthDAO() {}
+
     @Override
     public void createAuth(Authtoken auth) {
         database.add(auth);
@@ -38,11 +37,4 @@ public class MemoryAuthDAO implements AuthDAO{
         database.clear();
     }
 
-    public static synchronized MemoryAuthDAO getInstance() {
-        if (instance == null)
-        {
-            instance =  new MemoryAuthDAO();
-        }
-        return instance;
-    }
 }

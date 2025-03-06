@@ -8,17 +8,6 @@ import model.Game;
 public class MemoryGameDAO implements GameDAO {
     private final HashMap<Integer, Game> database = new HashMap<>();
     private int gameCounter = 0;
-    private static MemoryGameDAO instance;
-
-    private MemoryGameDAO() {
-    }
-
-    public static synchronized MemoryGameDAO getInstance() {
-        if (instance == null) {
-            instance = new MemoryGameDAO();
-        }
-        return instance;
-    }
 
     //C
     public int createGame(Game newGame) {

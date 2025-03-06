@@ -6,10 +6,6 @@ import java.util.ArrayList;
 
 public interface GameDAO {
     void clear();
-
-     static GameDAO makeInstance()  {
-        return MemoryGameDAO.getInstance();
-    }
     int createGame(Game newGame);
 
     Game getGame(int gameID);

@@ -7,10 +7,15 @@ import model.Authtoken;
 import java.util.UUID;
 
 public class UserService {
-    private static final UserDAO USER_DATABASE = UserDAO.makeInstance();
-    private static final AuthDAO AUTH_DATABASE = AuthDAO.makeInstance();
+    private final UserDAO USER_DATABASE;
+    private final AuthDAO AUTH_DATABASE;
 
-    public static RegisterResult registerService(RegisterRequest req) throws ServiceError
+    public UserService(UserDAO USER_DATABASE, AuthDAO AUTH_DATABASE) {
+        this.USER_DATABASE = USER_DATABASE;
+        this.AUTH_DATABASE = AUTH_DATABASE;
+    }
+
+    public RegisterResult registerService(RegisterRequest req) throws ServiceError
     {
         if(USER_DATABASE.findUser(req.username()) != null)
         {
@@ -29,7 +34,7 @@ public class UserService {
         return new RegisterResult(req.username(),auth);
     }
 
-    public static LoginResult loginService(LoginRequest req) throws ServiceError
+    public LoginResult loginService(LoginRequest req) throws ServiceError
     {
         var user = USER_DATABASE.findUser(req.username());
         if (user == null) {
@@ -45,7 +50,7 @@ public class UserService {
 
     }
 
-    public static void logoutService(LogoutRequest req) throws ServiceError,DataAccessException {
+    public void logoutService(LogoutRequest req) throws ServiceError,DataAccessException {
         var token = AUTH_DATABASE.findAuth(req.authToken());
         if (token == null) {
             throw new ServiceError("Error: unauthorized");

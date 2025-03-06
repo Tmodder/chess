@@ -1,8 +1,7 @@
 package server;
+import dataaccess.*;
 import handler.*;
-import service.ClearService;
 import spark.*;
-import com.google.gson.Gson;
 public class Server {
 
     public int run(int desiredPort) {
@@ -11,12 +10,12 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-
-        //This line initializes the server and can be removed once you have a functioning endpoint
-       // Spark.init();
-        var userHandler = new UserHandler();
-        var clearHandler = new ClearHandler();
-        var gameHandler = new GameHandler();
+        UserDAO userDb = new MemoryUserDAO();
+        AuthDAO authDb = new MemoryAuthDAO();
+        GameDAO gameDb = new MemoryGameDAO();
+        var userHandler = new UserHandler(userDb, authDb);
+        var clearHandler = new ClearHandler(userDb,authDb,gameDb);
+        var gameHandler = new GameHandler(authDb,gameDb);
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
         Spark.post("/game", gameHandler::createGame);

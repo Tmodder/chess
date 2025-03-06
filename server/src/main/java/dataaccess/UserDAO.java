@@ -7,7 +7,4 @@ public interface UserDAO {
     User findUser(String username);
     void clear();
 
-    static UserDAO makeInstance()  {
-       return MemoryUserDAO.getInstance();
-    }
 }

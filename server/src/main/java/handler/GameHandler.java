@@ -1,4 +1,6 @@
 package handler;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
 import requestandresult.CreateGameRequest;
 import requestandresult.JoinGameRequest;
 import requestandresult.ListGamesRequest;
@@ -8,12 +10,18 @@ import service.ServiceError;
 import spark.Response;
 import spark.Request;
 public class GameHandler extends Handler{
+    private final GameService service;
+
+    public GameHandler(AuthDAO authDb, GameDAO gameDb) {
+        this.service = new GameService(authDb,gameDb);
+    }
+
     public Object listGames(Request request, Response response)
     {
         try
         {
             String authToken = request.headers("authorization");
-            ListGamesResult result =  GameService.listGames(new ListGamesRequest(authToken));
+            ListGamesResult result =  service.listGames(new ListGamesRequest(authToken));
             if (result == null)
             {
                 return "";
@@ -36,7 +44,7 @@ public class GameHandler extends Handler{
             var body = getBody(request, CreateGameRequest.class);
             String authToken = request.headers("authorization");
             var requestWithHeader = new CreateGameRequest(authToken,body.gameName());
-            return resultToJson(GameService.createGame(requestWithHeader));
+            return resultToJson(service.createGame(requestWithHeader));
         }
 
          catch (ServiceError error)
@@ -59,7 +67,7 @@ public class GameHandler extends Handler{
             var body = getBody(request, JoinGameRequest.class);
             String authToken = request.headers("authorization");
             var requestWithHeader = new JoinGameRequest(authToken,body.playerColor(),body.gameID());
-            return GameService.joinGame(requestWithHeader);
+            return service.joinGame(requestWithHeader);
         }
 
         catch (ServiceError error)

@@ -1,5 +1,7 @@
 package handler;
 
+import dataaccess.AuthDAO;
+import dataaccess.UserDAO;
 import requestandresult.LoginRequest;
 import requestandresult.LogoutRequest;
 import requestandresult.RegisterRequest;
@@ -10,13 +12,19 @@ import spark.Request;
 import spark.Response;
 
 public class UserHandler extends Handler {
+    private final UserService service;
+
+    public UserHandler(UserDAO userDatabase, AuthDAO authDatabase) {
+        this.service = new UserService(userDatabase, authDatabase);
+
+    }
+
     public Object register(Request request, Response response)
     {
         try {
             var registerReq = getBody(request, RegisterRequest.class);
-            var registerResult = UserService.registerService(registerReq);
-            String json = resultToJson(registerResult);
-            return json;
+            var registerResult = service.registerService(registerReq);
+            return resultToJson(registerResult);
         }
 
         catch (ServiceError error)
@@ -31,9 +39,8 @@ public class UserHandler extends Handler {
     {
         try {
             var loginReq = getBody(request, LoginRequest.class);
-            var loginResult = UserService.loginService(loginReq);
-            String json = resultToJson(loginResult);
-            return json;
+            var loginResult = service.loginService(loginReq);
+            return resultToJson(loginResult);
         }
         catch (ServiceError error)
         {
@@ -44,7 +51,7 @@ public class UserHandler extends Handler {
     public Object logout (Request request, Response response) throws DataAccessException {
         try
         {
-            UserService.logoutService(new LogoutRequest(request.headers("authorization")));
+            service.logoutService(new LogoutRequest(request.headers("authorization")));
             return "null";
         } catch (ServiceError error) {
 

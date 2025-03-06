@@ -12,7 +12,4 @@ public interface AuthDAO {
 
     void clear();
 
-    static AuthDAO makeInstance()  {
-        return MemoryAuthDAO.getInstance();
-    }
 }
