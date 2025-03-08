@@ -13,16 +13,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8];
-    final private String startBoard = """
-            [r] [n] [b] [q] [k] [b] [n] [r]
-            [p] [p] [p] [p] [p] [p] [p] [p]
-            [~] [~] [~] [~] [~] [~] [~] [~]
-            [~] [~] [~] [~] [~] [~] [~] [~]
-            [~] [~] [~] [~] [~] [~] [~] [~]
-            [~] [~] [~] [~] [~] [~] [~] [~]
-            [P] [P] [P] [P] [P] [P] [P] [P]
-            [R] [N] [B] [Q] [K] [B] [N] [R]
-            """;
+
     public ChessBoard() {
     }
     public ChessBoard(ChessBoard other) {
@@ -171,6 +162,16 @@ public class ChessBoard {
                 }
             }
         }
+        String startBoard = """
+                [r] [n] [b] [q] [k] [b] [n] [r]
+                [p] [p] [p] [p] [p] [p] [p] [p]
+                [~] [~] [~] [~] [~] [~] [~] [~]
+                [~] [~] [~] [~] [~] [~] [~] [~]
+                [~] [~] [~] [~] [~] [~] [~] [~]
+                [~] [~] [~] [~] [~] [~] [~] [~]
+                [P] [P] [P] [P] [P] [P] [P] [P]
+                [R] [N] [B] [Q] [K] [B] [N] [R]
+                """;
         this.board = this.loadBoard(startBoard);
 
     }
