@@ -1,6 +1,7 @@
 package dataaccess;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class DatabaseManager {
@@ -44,6 +45,58 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    static void createTables() throws DataAccessException {
+        try {
+            ArrayList<String> statementsList = new ArrayList<>();
+            var statementDb = "Use chess";
+            var statementUser = """
+                    CREATE TABLE user_data (
+                    username VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL,
+                    PRIMARY KEY(username)
+                    )
+                    """;
+            var statementAuth = """
+                    CREATE TABLE authentication_data (
+                     username VARCHAR(255) NOT NULL,
+                     auth_token VARCHAR(255) NOT NULL,
+                     PRIMARY KEY(username)
+                     )
+                    """;
+            var statementGamesList = """
+                    CREATE TABLE games_list (
+                    game_id INT NOT NULL,
+                    game_name VARCHAR(255) NOT NULL,
+                    white_username VARCHAR(255) NOT NULL,
+                    black_username VARCHAR(255) NOT NULL,
+                    PRIMARY KEY(game_id)
+                    )
+                    """;
+            var statementGameData = """
+                    CREATE TABLE game_data (
+                    game_id INT NOT NULL,
+                    game_json VARCHAR(10000) NOT NULL,
+                    PRIMARY KEY(game_id)""";
+            statementsList.add(statementDb);
+            statementsList.add(statementUser);
+            statementsList.add(statementAuth);
+            statementsList.add(statementGamesList);
+            statementsList.add(statementGameData);
+            for (int i = 0; i < 4; i++)
+            {
+                var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+                try (var preparedStatement = conn.prepareStatement(statementsList.get(i))) {
+                    preparedStatement.execute();
+                }
+            }
+
+        }
+        catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
