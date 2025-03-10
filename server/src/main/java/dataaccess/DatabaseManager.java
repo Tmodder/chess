@@ -52,9 +52,9 @@ public class DatabaseManager {
     static void createTables() throws DataAccessException {
         try {
             ArrayList<String> statementsList = new ArrayList<>();
-            var statementDb = "Use chess";
+            var statementDb = "USE chess";
             var statementUser = """
-                    CREATE TABLE user_data (
+                    CREATE TABLE IF NOT EXISTS user_data (
                     username VARCHAR(255) NOT NULL,
                     password VARCHAR(255) NOT NULL,
                     email VARCHAR(255) NOT NULL,
@@ -62,14 +62,14 @@ public class DatabaseManager {
                     )
                     """;
             var statementAuth = """
-                    CREATE TABLE authentication_data (
+                    CREATE TABLE IF NOT EXISTS authentication_data (
                      username VARCHAR(255) NOT NULL,
                      auth_token VARCHAR(255) NOT NULL,
                      PRIMARY KEY(username)
-                     )
+                    )
                     """;
             var statementGamesList = """
-                    CREATE TABLE games_list (
+                    CREATE TABLE IF NOT EXISTS games_list (
                     game_id INT NOT NULL,
                     game_name VARCHAR(255) NOT NULL,
                     white_username VARCHAR(255) NOT NULL,
@@ -78,20 +78,22 @@ public class DatabaseManager {
                     )
                     """;
             var statementGameData = """
-                    CREATE TABLE game_data (
+                    CREATE TABLE IF NOT EXISTS game_data (
                     game_id INT NOT NULL,
-                    game_json VARCHAR(10000) NOT NULL,
-                    PRIMARY KEY(game_id)""";
+                    game_json VARCHAR(5000) NOT NULL,
+                    PRIMARY KEY(game_id)
+                    )""";
             statementsList.add(statementDb);
             statementsList.add(statementUser);
             statementsList.add(statementAuth);
             statementsList.add(statementGamesList);
             statementsList.add(statementGameData);
-            for (int i = 0; i < 4; i++)
+            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
+            for (int i = 0; i < statementsList.size() - 1; i++)
             {
-                var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-                try (var preparedStatement = conn.prepareStatement(statementsList.get(i))) {
-                    preparedStatement.execute();
+
+                try (var stmt = conn.createStatement()){
+                    stmt.executeUpdate(statementsList.get(i));
                 }
             }
 
