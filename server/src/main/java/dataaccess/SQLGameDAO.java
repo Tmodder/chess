@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class SQLGameDAO implements GameDAO
 {
+    private int gameCounter = 0;
     public SQLGameDAO()
     {
         try
@@ -46,16 +47,51 @@ public class SQLGameDAO implements GameDAO
         String whiteUsername = newGame.whiteUsername();
         String blackUsername = newGame.blackUsername();
         String gameJson = serializeGame(newGame.game());
-        //first get data out of model and serialize the game
-        //second create gameId
-        //third insert into game_data the game id and game json string
-        //fourth insert into games_list rest of data
-        //return game_Id
-        return 0;
+        int gameID = this.gameCounter + 1000;
+        this.gameCounter += 1;
+        String insertGameDataStatement = "INSERT INTO game_data VALUES(?,?,?,?)";
+        String insertGamesListStatement = "INSERT INTO games_list VALUES(?,?)";
+        try(var conn = DatabaseManager.getConnection())
+        {
+           try (var stmt = conn.prepareStatement(insertGameDataStatement))
+           {
+               stmt.setInt(1,gameID);
+               stmt.setString(2,gameName);
+               stmt.setString(3,whiteUsername);
+               stmt.setString(4,blackUsername);
+               stmt.executeUpdate();
+           }
+
+           try (var stmtTwo = conn.prepareStatement(insertGamesListStatement))
+           {
+               stmtTwo.setInt(1,gameID);
+               stmtTwo.setString(2,gameJson);
+               stmtTwo.executeUpdate();
+           }
+
+        }
+        catch (SQLException e)
+        {
+            throw new DataAccessException(e.getMessage());
+        }
+        return gameID;
     }
 
     @Override
     public Game getGame(int gameID) throws DataAccessException{
+////        try(var conn = DatabaseManager.getConnection())
+////        {
+////            String selectF
+////
+////            try (var stmt = conn.prepareStatement())
+////            {
+////                stmt.executeQuery("")
+////            }
+////        }
+//        catch (SQLException e)
+//        {
+//            throw new DataAccessException(e.getMessage());
+//        }
         //Select * from games_list WHERE gameID = gameID
         // rs.next() get all the data
         //Select game_json from game_data WHERE gameID = gameID

@@ -50,7 +50,6 @@ public class DatabaseManager {
     }
 
     static void createTables() throws DataAccessException {
-        try {
             ArrayList<String> statementsList = new ArrayList<>();
             var statementDb = "USE chess";
             var statementUser = """
@@ -88,19 +87,22 @@ public class DatabaseManager {
             statementsList.add(statementAuth);
             statementsList.add(statementGamesList);
             statementsList.add(statementGameData);
-            var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
-            for (int i = 0; i < statementsList.size() - 1; i++)
+            try(var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD))
             {
+                for (int i = 0; i < statementsList.size(); i++)
+                {
 
-                try (var stmt = conn.createStatement()){
-                    stmt.executeUpdate(statementsList.get(i));
+                    try (var stmt = conn.createStatement()){
+                        stmt.executeUpdate(statementsList.get(i));
+                    }
+
                 }
             }
+            catch (SQLException e) {
+                throw new DataAccessException(e.getMessage());
+            }
 
-        }
-        catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
-        }
+
     }
 
     /**
