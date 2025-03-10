@@ -10,7 +10,7 @@ public class MemoryGameDAO implements GameDAO {
     private int gameCounter = 0;
 
     //C
-    public int createGame(Game newGame) {
+    public int createGame(Game newGame) throws DataAccessException{
         String name = newGame.gameName();
         int gameID = this.gameCounter + 1000;
         this.gameCounter += 1;
@@ -19,16 +19,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     //R
-    public Game getGame(int gameID) {
+    public Game getGame(int gameID) throws DataAccessException{
         return database.get(gameID);
     }
 
-    public ArrayList<Game> getGamesList() {
+    public ArrayList<Game> getGamesList() throws DataAccessException{
         return new ArrayList<>(database.values());
     }
 
     //U
-    public void addPlayerToGame(String color, String username, Game game)
+    public void addPlayerToGame(String color, String username, Game game) throws DataAccessException
     {
         Game updatedGame;
         if (color.equals("WHITE"))
@@ -47,7 +47,7 @@ public class MemoryGameDAO implements GameDAO {
     }
     //D
 
-    public void clear()
+    public void clear() throws DataAccessException
     {
         database.clear();
     }

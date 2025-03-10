@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import requestandresult.*;
 import chess.ChessGame;
 import dataaccess.AuthDAO;
@@ -17,51 +18,71 @@ public class GameService {
 
     public ListGamesResult listGames(ListGamesRequest req) throws ServiceError
     {
-        authorizeRequest(req.authToken());
-        return ListGamesResult.convertGameModelToResult(GAME_DATABASE.getGamesList());
+        try
+        {
+            authorizeRequest(req.authToken());
+            return ListGamesResult.convertGameModelToResult(GAME_DATABASE.getGamesList());
+        } catch (DataAccessException e) {
+            throw new ServiceError(e.getMessage());
+        }
+
     }
 
     public CreateGameResult createGame(CreateGameRequest req) throws ServiceError
     {
-        authorizeRequest(req.authToken());
-        var newGame = new Game(-1,null,null,req.gameName(),new ChessGame());
-        return new CreateGameResult(GAME_DATABASE.createGame(newGame));
+        try
+        {
+            authorizeRequest(req.authToken());
+            var newGame = new Game(-1,null,null,req.gameName(),new ChessGame());
+            return new CreateGameResult(GAME_DATABASE.createGame(newGame));
+        }
+        catch (DataAccessException e)
+        {
+            throw  new ServiceError(e.getMessage());
+        }
+
     }
 
     public String joinGame(JoinGameRequest req) throws ServiceError
     {
-        authorizeRequest(req.authToken());
-        var token = AUTH_DATABASE.findAuth(req.authToken());
-        var gameToJoin = GAME_DATABASE.getGame(req.gameID());
-        if (gameToJoin == null)
+        try
         {
-            throw new ServiceError("Error: bad request");
-        }
-        else if (req.playerColor() == null)
-        {
-            throw new ServiceError("Error: bad request");
+            authorizeRequest(req.authToken());
+            var token = AUTH_DATABASE.findAuth(req.authToken());
+            var gameToJoin = GAME_DATABASE.getGame(req.gameID());
+            if (gameToJoin == null)
+            {
+                throw new ServiceError("Error: bad request");
+            }
+            else if (req.playerColor() == null)
+            {
+                throw new ServiceError("Error: bad request");
+            }
+
+            else if (!(req.playerColor().equals("BLACK") || req.playerColor().equals("WHITE")))
+            {
+                throw new ServiceError("Error: bad request");
+            }
+
+            else if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername() == null)
+            {
+                GAME_DATABASE.addPlayerToGame("BLACK",token.username(),gameToJoin);
+            }
+
+            else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername() == null)
+            {
+                GAME_DATABASE.addPlayerToGame("WHITE",token.username(),gameToJoin);
+            }
+
+            else
+            {
+                throw new ServiceError("Error: already taken");
+            }
+            return "";
+        } catch (DataAccessException e) {
+            throw new ServiceError(e.getMessage());
         }
 
-        else if (!(req.playerColor().equals("BLACK") || req.playerColor().equals("WHITE")))
-        {
-            throw new ServiceError("Error: bad request");
-        }
-
-        else if (req.playerColor().equals("BLACK") && gameToJoin.blackUsername() == null)
-        {
-            GAME_DATABASE.addPlayerToGame("BLACK",token.username(),gameToJoin);
-        }
-
-        else if (req.playerColor().equals("WHITE") && gameToJoin.whiteUsername() == null)
-        {
-            GAME_DATABASE.addPlayerToGame("WHITE",token.username(),gameToJoin);
-        }
-
-        else
-        {
-            throw new ServiceError("Error: already taken");
-        }
-        return "";
     }
 
     private void authorizeRequest(String authToken) throws ServiceError

@@ -4,6 +4,8 @@ import dataaccess.*;
 import requestandresult.CreateGameRequest;
 import requestandresult.RegisterRequest;
 import org.junit.jupiter.api.Test;
+
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClearServiceTest {
@@ -17,21 +19,34 @@ public class ClearServiceTest {
     static String username = "bob";
     public void fillDb()
     {
-        USER_DATABASE.clear();
-        AUTH_DATABASE.clear();
-        GAME_DATABASE.clear();
-        var registerRes = user.registerService(new RegisterRequest(username,"password","email"));
-        authToken = registerRes.authToken();
-        game.createGame(new CreateGameRequest(authToken,"bobs game"));
+        try
+        {
+            USER_DATABASE.clear();
+            AUTH_DATABASE.clear();
+            GAME_DATABASE.clear();
+            var registerRes = user.registerService(new RegisterRequest(username,"password","email"));
+            authToken = registerRes.authToken();
+            game.createGame(new CreateGameRequest(authToken,"bobs game"));
+        }
+        catch (DataAccessException e)
+        {
+            throw new ServiceError(e.getMessage());
+        }
     }
 
     @Test
     public void clearFullDb()
     {
-        fillDb();
-        service.runClear();
-        assertEquals(0, GAME_DATABASE.getGamesList().size());
-        assertNull(AUTH_DATABASE.findAuth(authToken));
-        assertNull(USER_DATABASE.findUser(username));
+        try {
+            fillDb();
+            service.runClear();
+            assertEquals(0, GAME_DATABASE.getGamesList().size());
+            assertNull(AUTH_DATABASE.findAuth(authToken));
+            assertNull(USER_DATABASE.findUser(username));
+        }
+        catch (DataAccessException e)
+        {
+            throw new ServiceError(e.getMessage());
+        }
     }
 }

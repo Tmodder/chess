@@ -34,7 +34,15 @@ public class GameServiceTests {
     {
         var authToken = makeUser();
         var result = service.createGame(new CreateGameRequest(authToken,game1));
-        assertNotNull(GAME_DATABASE.getGame(result.gameID()));
+        try
+        {
+            assertNotNull(GAME_DATABASE.getGame(result.gameID()));
+        }
+        catch (DataAccessException e)
+        {
+           throw new ServiceError(e.getMessage());
+        }
+
     }
 
     @Test
@@ -50,40 +58,62 @@ public class GameServiceTests {
     @Order(3)
     public void joinGameAsWhiteUpdatesGame()
     {
-        AUTH_DATABASE.clear();
-        USER_DATABASE.clear();
-        var authToken = makeUser();
-        var createGameResult = service.createGame(new CreateGameRequest(authToken,game1));
-        int gameId = createGameResult.gameID();
-        var joinGameResult = service.joinGame(new JoinGameRequest(authToken,"WHITE",gameId));
-        assertEquals("bob", GAME_DATABASE.getGame(gameId).whiteUsername());
+        try
+        {
+            AUTH_DATABASE.clear();
+            USER_DATABASE.clear();
+            var authToken = makeUser();
+            var createGameResult = service.createGame(new CreateGameRequest(authToken,game1));
+            int gameId = createGameResult.gameID();
+            var joinGameResult = service.joinGame(new JoinGameRequest(authToken,"WHITE",gameId));
+            assertEquals("bob", GAME_DATABASE.getGame(gameId).whiteUsername());
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 
     @Test
     @Order(4)
     public void joinGameasWhiteAgainFails()
     {
-        AUTH_DATABASE.clear();
-        USER_DATABASE.clear();
-        var authToken = makeUser();
-        GAME_DATABASE.clear();
-        var createGameResult = service.createGame(new CreateGameRequest(authToken,game1));
-        int gameId = createGameResult.gameID();
-        var joinGameReq = new JoinGameRequest(authToken,"WHITE",gameId);
-        var joinGameResultOne = service.joinGame(joinGameReq);
-        assertThrows(ServiceError.class, () -> service.joinGame(joinGameReq));
+        try
+        {
+            AUTH_DATABASE.clear();
+            USER_DATABASE.clear();
+            var authToken = makeUser();
+            GAME_DATABASE.clear();
+            var createGameResult = service.createGame(new CreateGameRequest(authToken,game1));
+            int gameId = createGameResult.gameID();
+            var joinGameReq = new JoinGameRequest(authToken,"WHITE",gameId);
+            var joinGameResultOne = service.joinGame(joinGameReq);
+            assertThrows(ServiceError.class, () -> service.joinGame(joinGameReq));
+        }
+        catch (DataAccessException e)
+        {
+           throw new  ServiceError(e.getMessage());
+        }
+
     }
 
     @Test
     @Order(5)
     public void listGamesWithNoGames()
     {
-        AUTH_DATABASE.clear();
-        USER_DATABASE.clear();
-        var authToken = makeUser();
-        GAME_DATABASE.clear();
-        assertNotNull(service.listGames(new ListGamesRequest(authToken)));
-        assertEquals(0, GAME_DATABASE.getGamesList().size());
+        try
+        {
+            AUTH_DATABASE.clear();
+            USER_DATABASE.clear();
+            var authToken = makeUser();
+            GAME_DATABASE.clear();
+            assertNotNull(service.listGames(new ListGamesRequest(authToken)));
+            assertEquals(0, GAME_DATABASE.getGamesList().size());
+        }
+        catch (DataAccessException e)
+        {
+            throw new  ServiceError(e.getMessage());
+        }
+
 
     }
 
@@ -91,15 +121,23 @@ public class GameServiceTests {
     @Order(6)
     public void listGamesWithMutipleGames()
     {
-        AUTH_DATABASE.clear();
-        USER_DATABASE.clear();
-        var authToken = makeUser();
-        GAME_DATABASE.clear();
-        var createGameResultOne = service.createGame(new CreateGameRequest(authToken,game1));
-        var createGameResultTwo = service.createGame(new CreateGameRequest(authToken, game2));
-        var gameOneData = GAME_DATABASE.getGame(createGameResultOne.gameID());
-        var gameTwoData = GAME_DATABASE.getGame(createGameResultTwo.gameID());
-        var listResult = service.listGames(new ListGamesRequest(authToken));
-        assertEquals(2,listResult.games().size());
+        try
+        {
+            AUTH_DATABASE.clear();
+            USER_DATABASE.clear();
+            var authToken = makeUser();
+            GAME_DATABASE.clear();
+            var createGameResultOne = service.createGame(new CreateGameRequest(authToken,game1));
+            var createGameResultTwo = service.createGame(new CreateGameRequest(authToken, game2));
+            var gameOneData = GAME_DATABASE.getGame(createGameResultOne.gameID());
+            var gameTwoData = GAME_DATABASE.getGame(createGameResultTwo.gameID());
+            var listResult = service.listGames(new ListGamesRequest(authToken));
+            assertEquals(2,listResult.games().size());
+        }
+        catch (DataAccessException e)
+        {
+            throw new  ServiceError(e.getMessage());
+        }
+
     }
 }

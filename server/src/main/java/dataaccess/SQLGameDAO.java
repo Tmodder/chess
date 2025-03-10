@@ -7,12 +7,13 @@ import java.util.ArrayList;
 public class SQLGameDAO implements GameDAO
 {
     @Override
-    public void clear() {
+    public void clear() throws DataAccessException{
+
         //do sql command drop table game_data, drop table games_list
     }
 
     @Override
-    public int createGame(Game newGame) {
+    public int createGame(Game newGame) throws DataAccessException{
         //first get data out of model and serialize the game
         //second create gameId
         //third insert into game_data the game id and game json string
@@ -22,7 +23,7 @@ public class SQLGameDAO implements GameDAO
     }
 
     @Override
-    public Game getGame(int gameID) {
+    public Game getGame(int gameID) throws DataAccessException{
         //Select * from games_list WHERE gameID = gameID
         // rs.next() get all the data
         //Select game_json from game_data WHERE gameID = gameID
@@ -32,7 +33,7 @@ public class SQLGameDAO implements GameDAO
     }
 
     @Override
-    public ArrayList<Game> getGamesList() {
+    public ArrayList<Game> getGamesList() throws DataAccessException{
         // join tables
         // get all the data for each row deserialize game_json
         // create a new Game object and add to list
