@@ -12,7 +12,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         UserDAO userDb = new MemoryUserDAO();
         AuthDAO authDb = new MemoryAuthDAO();
-        GameDAO gameDb = new MemoryGameDAO();
+        GameDAO gameDb = new SQLGameDAO();
         var userHandler = new UserHandler(userDb, authDb);
         var clearHandler = new ClearHandler(userDb,authDb,gameDb);
         var gameHandler = new GameHandler(authDb,gameDb);

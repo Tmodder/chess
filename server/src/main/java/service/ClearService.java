@@ -13,9 +13,17 @@ public class ClearService {
 
     public void runClear()
     {
-        USER_DATABASE.clear();
-        AUTH_DATABASE.clear();
-        GAME_DATABASE.clear();
+        try
+        {
+            USER_DATABASE.clear();
+            AUTH_DATABASE.clear();
+            GAME_DATABASE.clear();
+        }
+        catch (DataAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
