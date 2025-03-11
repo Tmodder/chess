@@ -71,8 +71,8 @@ public class DatabaseManager {
                     CREATE TABLE IF NOT EXISTS games_list (
                     game_id INT NOT NULL,
                     game_name VARCHAR(255) NOT NULL,
-                    white_username VARCHAR(255) NOT NULL,
-                    black_username VARCHAR(255) NOT NULL,
+                    white_username VARCHAR(255),
+                    black_username VARCHAR(255),
                     PRIMARY KEY(game_id)
                     )
                     """;
