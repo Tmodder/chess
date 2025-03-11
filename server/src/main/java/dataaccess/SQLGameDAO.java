@@ -3,8 +3,6 @@ package dataaccess;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.Game;
-
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -12,7 +10,6 @@ public class SQLGameDAO implements GameDAO
 {
     private int gameCounter = 0;
     public SQLGameDAO()
-            //run every time? clear then calling over functions will return not exist
     {
         try
         {
@@ -32,8 +29,8 @@ public class SQLGameDAO implements GameDAO
         {
             try(var stmt = conn.createStatement())
             {
-                stmt.executeUpdate("DROP TABLE game_data");
-                stmt.executeUpdate("DROP TABLE games_list");
+                stmt.executeUpdate("DROP TABLE IF EXISTS game_data");
+                stmt.executeUpdate("DROP TABLE IF EXISTS games_list");
             }
         }
         catch (SQLException e)
@@ -135,17 +132,17 @@ public class SQLGameDAO implements GameDAO
     @Override
     public void addPlayerToGame(String color, String username, Game game) throws DataAccessException {
         String updateStatement;
-        if (color.equals("WHITE"))
+        if (color.equals("WHITE") && game.whiteUsername() == null)
         {
            updateStatement = "UPDATE games_list SET white_username = ? WHERE game_id = ?";
         }
 
-        else if (color.equals("BLACK")) {
+        else if (color.equals("BLACK") && game.blackUsername() == null) {
             updateStatement = "UPDATE games_list SET black_username = ? WHERE game_id = ?";
         }
         else
         {
-            return;
+            throw new DataAccessException("Spot taken");
         }
         try(var conn = DatabaseManager.getConnection())
         {
