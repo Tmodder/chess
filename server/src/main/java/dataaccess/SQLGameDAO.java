@@ -89,6 +89,7 @@ public class SQLGameDAO implements GameDAO
              {
                  stmt.setInt(1,gameID);
                  var rs = stmt.executeQuery();
+                 rs.next();
                  String json = rs.getString(1);
                  String gameName = rs.getString(2);
                  String whiteUsername = rs.getString(3);
@@ -106,8 +107,8 @@ public class SQLGameDAO implements GameDAO
     public ArrayList<Game> getGamesList() throws DataAccessException{
         DatabaseManager.createTables();
         String getAllGameData = """
-                SELECT DISTINCT game_data.game_id, game_data.game_json, games_list.game_name, games_list.white_username, games_list.black_username
-                FROM game_data JOIN games_list
+                SELECT game_data.game_id, game_data.game_json, games_list.game_name, games_list.white_username, games_list.black_username
+                FROM game_data JOIN games_list ON game_data.game_id = games_list.game_id
                 """;
         ArrayList<Game> gamesList = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection())
@@ -132,8 +133,30 @@ public class SQLGameDAO implements GameDAO
     }
 
     @Override
-    public void addPlayerToGame(String color, String username, Game game) {
+    public void addPlayerToGame(String color, String username, Game game) throws DataAccessException {
+        String updateStatement;
+        if (color.equals("WHITE"))
+        {
+           updateStatement = "UPDATE games_list SET white_username = ? WHERE game_id = ?";
+        }
 
+        else if (color.equals("BLACK")) {
+            updateStatement = "UPDATE games_list SET black_username = ? WHERE game_id = ?";
+        }
+        else
+        {
+            return;
+        }
+        try(var conn = DatabaseManager.getConnection())
+        {
+            try(var stmt = conn.prepareStatement(updateStatement)) {
+                stmt.setString(1,username);
+                stmt.setInt(2,game.gameID());
+                stmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     private String serializeGame(ChessGame game)
