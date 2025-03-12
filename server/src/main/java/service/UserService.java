@@ -69,12 +69,15 @@ public class UserService {
 
     }
 
-    public void logoutService(LogoutRequest req) throws ServiceError,DataAccessException {
-        var token = AUTH_DATABASE.findAuth(req.authToken());
-        if (token == null) {
+    public void logoutService(LogoutRequest req) throws ServiceError {
+        try
+        {
+            var token = AUTH_DATABASE.findAuth(req.authToken());
+            AUTH_DATABASE.deleteAuth(token);
+        } catch (DataAccessException e) {
             throw new ServiceError("Error: unauthorized");
         }
-        AUTH_DATABASE.deleteAuth(token);
+
     }
 
     private String makeHash(String password)

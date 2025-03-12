@@ -91,11 +91,13 @@ public class GameService {
 
     private void authorizeRequest(String authToken) throws ServiceError
     {
-        var token = AUTH_DATABASE.findAuth(authToken);
-        if (token == null)
+        try
         {
+            var token = AUTH_DATABASE.findAuth(authToken);
+        } catch (DataAccessException e) {
             throw new ServiceError("Error: unauthorized");
         }
+
 
     }
 

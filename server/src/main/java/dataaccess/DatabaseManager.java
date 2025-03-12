@@ -63,8 +63,7 @@ public class DatabaseManager {
             var statementAuth = """
                     CREATE TABLE IF NOT EXISTS authentication_data (
                      username VARCHAR(255) NOT NULL,
-                     auth_token VARCHAR(255) NOT NULL,
-                     PRIMARY KEY(username)
+                     auth_token VARCHAR(255) NOT NULL
                     )
                     """;
             var statementGamesList = """

@@ -14,8 +14,8 @@ public class SQLUserDAO implements UserDAO
             try(var conn = DatabaseManager.getConnection())
             {
                 var stmt = conn.prepareStatement(insertUser);
-                stmt.setString(1, newUser.password());
-                stmt.setString(2, newUser.username());
+                stmt.setString(1, newUser.username());
+                stmt.setString(2, newUser.password());
                 stmt.setString(3, newUser.email());
                 stmt.executeUpdate();
             }
@@ -35,7 +35,10 @@ public class SQLUserDAO implements UserDAO
             var stmt = conn.prepareStatement(selectUser);
             stmt.setString(1, username);
             var rs = stmt.executeQuery();
-            rs.next();
+            if(!rs.next())
+            {
+                return null;
+            }
             return new User(rs.getString(1),rs.getString(2),rs.getString(3));
 
         }

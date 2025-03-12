@@ -10,8 +10,8 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        UserDAO userDb = new MemoryUserDAO();
-        AuthDAO authDb = new MemoryAuthDAO();
+        UserDAO userDb = new SQLUserDAO();
+        AuthDAO authDb = new SQLAuthDAO();
         GameDAO gameDb = new SQLGameDAO();
         var userHandler = new UserHandler(userDb, authDb);
         var clearHandler = new ClearHandler(userDb,authDb,gameDb);
