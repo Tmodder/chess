@@ -23,7 +23,7 @@ public class UserServiceTests {
     @Order(1)
     public void registerAddsUserToDb()
     {
-        assertNotNull(USER_DATABASE.findUser(username));
+        assertDoesNotThrow(()->USER_DATABASE.findUser(username));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class UserServiceTests {
     {
         var req = new LoginRequest(username, password);
         var result = service.loginService(req);
-        assertNotNull(AUTH_DATABASE.findAuth(result.authToken()));
+        assertDoesNotThrow(() -> AUTH_DATABASE.findAuth(result.authToken()));
     }
 
     @Test
