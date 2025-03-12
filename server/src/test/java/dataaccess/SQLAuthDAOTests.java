@@ -16,9 +16,9 @@ class SQLAuthDAOTest
     void setUp() {
         try
         {
-            DatabaseManager.dropDatabase();
             DatabaseManager.createDatabase();
             DatabaseManager.createTables();
+            dao.clear();
         }
         catch (DataAccessException e)
         {
