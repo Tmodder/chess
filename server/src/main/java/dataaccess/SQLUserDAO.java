@@ -37,7 +37,7 @@ public class SQLUserDAO implements UserDAO
             var rs = stmt.executeQuery();
             if(!rs.next())
             {
-                return null;
+               return null;
             }
             return new User(rs.getString(1),rs.getString(2),rs.getString(3));
 
