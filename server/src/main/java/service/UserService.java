@@ -1,5 +1,6 @@
 package service;
 
+import org.mindrot.jbcrypt.BCrypt;
 import requestandresult.*;
 import dataaccess.*;
 import model.User;
@@ -26,7 +27,7 @@ public class UserService {
         {
             throw new ServiceError("Error: bad request");
         }
-        var newUser = new User(req.username(), req.password(), req.email());
+        var newUser = new User(req.username(), makeHash(req.password()), req.email());
         USER_DATABASE.createUser(newUser);
         var auth = generateToken();
         var newToken = new Authtoken(auth, req.username());
@@ -40,7 +41,7 @@ public class UserService {
         if (user == null) {
             throw new ServiceError("Error: unauthorized");
         }
-        if (!user.password().equals(req.password())) {
+        if (!verifyPassword(req.password(), user.password())) {
             throw new ServiceError("Error: unauthorized");
         }
         var auth = generateToken();
@@ -58,7 +59,14 @@ public class UserService {
         AUTH_DATABASE.deleteAuth(token);
     }
 
-
+    private String makeHash(String password)
+    {
+       return BCrypt.hashpw(password,BCrypt.gensalt());
+    }
+    private boolean verifyPassword(String password,String hash)
+    {
+        return BCrypt.checkpw(password, hash);
+    }
 
     private static String generateToken() {
         return UUID.randomUUID().toString();
