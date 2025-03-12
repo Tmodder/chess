@@ -51,7 +51,7 @@ public class DatabaseManager {
 
     static void createTables() throws DataAccessException {
             ArrayList<String> statementsList = new ArrayList<>();
-            var statementDb = "USE" + DATABASE_NAME;
+            var statementDb = "USE " + DATABASE_NAME;
             var statementUser = """
                     CREATE TABLE IF NOT EXISTS user_data (
                     username VARCHAR(255) NOT NULL,
