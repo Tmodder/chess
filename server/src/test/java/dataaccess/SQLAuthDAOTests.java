@@ -1,7 +1,6 @@
 package dataaccess;
 
 import model.Authtoken;
-import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
