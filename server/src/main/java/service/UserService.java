@@ -73,6 +73,10 @@ public class UserService {
         try
         {
             var token = AUTH_DATABASE.findAuth(req.authToken());
+            if (token == null)
+            {
+                throw new DataAccessException("Token is null");
+            }
             AUTH_DATABASE.deleteAuth(token);
         } catch (DataAccessException e) {
             throw new ServiceError("Error: unauthorized");
