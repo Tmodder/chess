@@ -80,6 +80,10 @@ public class GameService {
             }
             return "";
         } catch (DataAccessException e) {
+            if (e.getMessage().equals("Illegal operation on empty result set."))
+            {
+                throw new ServiceError("Error: bad request");
+            }
             throw new ServiceError(e.getMessage());
         }
 

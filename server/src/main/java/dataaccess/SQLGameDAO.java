@@ -78,9 +78,9 @@ public class SQLGameDAO implements GameDAO
         DatabaseManager.createTables();
         try(var conn = DatabaseManager.getConnection())
         {
-            String selectAndJoinGame = """
+            String selectAndJoinGame ="""
             SELECT game_data.game_json, games_list.game_name, games_list.white_username, games_list.black_username
-            FROM game_data JOIN games_list WHERE game_data.game_id = ?
+            FROM game_data JOIN games_list ON game_data.game_id = games_list.game_id AND game_data.game_id = ?
             """;
              try (var stmt = conn.prepareStatement(selectAndJoinGame))
              {
@@ -132,17 +132,13 @@ public class SQLGameDAO implements GameDAO
     @Override
     public void addPlayerToGame(String color, String username, Game game) throws DataAccessException {
         String updateStatement;
-        if (color.equals("WHITE") && game.whiteUsername() == null)
+        if (color.equals("WHITE"))
         {
            updateStatement = "UPDATE games_list SET white_username = ? WHERE game_id = ?";
         }
 
-        else if (color.equals("BLACK") && game.blackUsername() == null) {
+        else {
             updateStatement = "UPDATE games_list SET black_username = ? WHERE game_id = ?";
-        }
-        else
-        {
-            throw new DataAccessException("Spot taken");
         }
         try(var conn = DatabaseManager.getConnection())
         {
