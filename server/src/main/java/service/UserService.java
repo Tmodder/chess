@@ -5,6 +5,7 @@ import requestandresult.*;
 import dataaccess.*;
 import model.User;
 import model.Authtoken;
+
 import java.util.UUID;
 
 public class UserService {
@@ -18,36 +19,53 @@ public class UserService {
 
     public RegisterResult registerService(RegisterRequest req) throws ServiceError
     {
-        if(USER_DATABASE.findUser(req.username()) != null)
+        try
         {
-            throw new ServiceError("Error: already taken");
+            if(USER_DATABASE.findUser(req.username()) != null)
+            {
+                throw new ServiceError("Error: already taken");
+            }
+
+            if(req.password() == null)
+            {
+                throw new ServiceError("Error: bad request");
+            }
+            var newUser = new User(req.username(), makeHash(req.password()), req.email());
+            USER_DATABASE.createUser(newUser);
+            var auth = generateToken();
+            var newToken = new Authtoken(auth, req.username());
+            AUTH_DATABASE.createAuth(newToken);
+            return new RegisterResult(req.username(),auth);
         }
 
-        if(req.password() == null)
+        catch (DataAccessException e)
         {
-            throw new ServiceError("Error: bad request");
+            throw new ServiceError(e.getMessage());
         }
-        var newUser = new User(req.username(), makeHash(req.password()), req.email());
-        USER_DATABASE.createUser(newUser);
-        var auth = generateToken();
-        var newToken = new Authtoken(auth, req.username());
-        AUTH_DATABASE.createAuth(newToken);
-        return new RegisterResult(req.username(),auth);
+
     }
 
     public LoginResult loginService(LoginRequest req) throws ServiceError
     {
-        var user = USER_DATABASE.findUser(req.username());
-        if (user == null) {
-            throw new ServiceError("Error: unauthorized");
+        try
+        {
+            var user = USER_DATABASE.findUser(req.username());
+            if (user == null) {
+                throw new ServiceError("Error: unauthorized");
+            }
+            if (!verifyPassword(req.password(), user.password())) {
+                throw new ServiceError("Error: unauthorized");
+            }
+            var auth = generateToken();
+            var newToken = new Authtoken(auth, req.username());
+            AUTH_DATABASE.createAuth(newToken);
+            return new LoginResult(req.username(),auth);
         }
-        if (!verifyPassword(req.password(), user.password())) {
-            throw new ServiceError("Error: unauthorized");
+        catch (DataAccessException e)
+        {
+            throw new ServiceError(e.getMessage());
         }
-        var auth = generateToken();
-        var newToken = new Authtoken(auth, req.username());
-        AUTH_DATABASE.createAuth(newToken);
-        return new LoginResult(req.username(),auth);
+
 
     }
 
