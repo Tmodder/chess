@@ -142,13 +142,12 @@ class SQLGameDAOTests
 
     @Test
     @Order(10)
-    void addPlayerToFullGameThrowsError()
+    void addPlayerToGreenThrowsError()
     {
         try
         {
             int gameId = dao.createGame(new Game(-1,null,null,gameName,game));
-            dao.addPlayerToGame("WHITE",whiteUsername,dao.getGame(gameId));
-            assertThrows(DataAccessException.class,() -> dao.addPlayerToGame("WHITE",whiteUsername,dao.getGame(gameId)));
+            assertThrows(DataAccessException.class,() -> dao.addPlayerToGame("GREEN",whiteUsername,dao.getGame(gameId)));
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }

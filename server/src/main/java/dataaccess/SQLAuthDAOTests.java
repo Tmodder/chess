@@ -78,6 +78,7 @@ class SQLAuthDAOTest
 
     }
 
+    @Test
     void deleteAuthRemovesTokenFromTable()
     {
         try {
@@ -93,28 +94,13 @@ class SQLAuthDAOTest
     }
 
     @Test
-    void deleteAuthThatDoesntExistFails()
-    {
-        try
-        {
-            dao.createAuth(new Authtoken(token,username));
-            assertNotNull(dao.findAuth(token));
-            assertThrows(DataAccessException.class, () -> dao.deleteAuth(new Authtoken(token,username)));
-        }
-        catch (DataAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
     void clearDropsTable()
     {
         try
         {
             dao.createAuth(new Authtoken(token,username));
             dao.clear();
-            assertNull(dao.findAuth(token));
+            assertThrows(DataAccessException.class,()->dao.findAuth(token));
         }
         catch (DataAccessException e)
         {

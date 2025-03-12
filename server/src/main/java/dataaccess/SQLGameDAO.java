@@ -137,8 +137,12 @@ public class SQLGameDAO implements GameDAO
            updateStatement = "UPDATE games_list SET white_username = ? WHERE game_id = ?";
         }
 
-        else {
+        else if (color.equals("BLACK")) {
             updateStatement = "UPDATE games_list SET black_username = ? WHERE game_id = ?";
+        }
+        else
+        {
+            throw new DataAccessException("Error: bad request");
         }
         try(var conn = DatabaseManager.getConnection())
         {
