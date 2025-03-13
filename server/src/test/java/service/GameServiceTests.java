@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class GameServiceTests {
-    private final AuthDAO AUTH_DATABASE = new MemoryAuthDAO();
-    private final UserDAO USER_DATABASE = new MemoryUserDAO();
-    private final UserService user = new UserService(USER_DATABASE, AUTH_DATABASE);
-    private final GameDAO GAME_DATABASE = new MemoryGameDAO();
-    private final GameService service = new GameService(AUTH_DATABASE,GAME_DATABASE);
+    private final AuthDAO authDatabase = new MemoryAuthDAO();
+    private final UserDAO userDatabase = new MemoryUserDAO();
+    private final UserService user = new UserService(userDatabase, authDatabase);
+    private final GameDAO gameDatabase = new MemoryGameDAO();
+    private final GameService service = new GameService(authDatabase,gameDatabase);
     private final String game1 = "game1";
     private final String game2 = "game2";
 
@@ -36,7 +36,7 @@ public class GameServiceTests {
         var result = service.createGame(new CreateGameRequest(authToken,game1));
         try
         {
-            assertNotNull(GAME_DATABASE.getGame(result.gameID()));
+            assertNotNull(gameDatabase.getGame(result.gameID()));
         }
         catch (DataAccessException e)
         {
@@ -60,13 +60,13 @@ public class GameServiceTests {
     {
         try
         {
-            AUTH_DATABASE.clear();
-            USER_DATABASE.clear();
+            authDatabase.clear();
+            userDatabase.clear();
             var authToken = makeUser();
             var createGameResult = service.createGame(new CreateGameRequest(authToken,game1));
             int gameId = createGameResult.gameID();
             var joinGameResult = service.joinGame(new JoinGameRequest(authToken,"WHITE",gameId));
-            assertEquals("bob", GAME_DATABASE.getGame(gameId).whiteUsername());
+            assertEquals("bob", gameDatabase.getGame(gameId).whiteUsername());
         } catch (DataAccessException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -79,10 +79,10 @@ public class GameServiceTests {
     {
         try
         {
-            AUTH_DATABASE.clear();
-            USER_DATABASE.clear();
+            authDatabase.clear();
+            userDatabase.clear();
             var authToken = makeUser();
-            GAME_DATABASE.clear();
+            gameDatabase.clear();
             var createGameResult = service.createGame(new CreateGameRequest(authToken,game1));
             int gameId = createGameResult.gameID();
             var joinGameReq = new JoinGameRequest(authToken,"WHITE",gameId);
@@ -102,12 +102,12 @@ public class GameServiceTests {
     {
         try
         {
-            AUTH_DATABASE.clear();
-            USER_DATABASE.clear();
+            authDatabase.clear();
+            userDatabase.clear();
             var authToken = makeUser();
-            GAME_DATABASE.clear();
+            gameDatabase.clear();
             assertNotNull(service.listGames(new ListGamesRequest(authToken)));
-            assertEquals(0, GAME_DATABASE.getGamesList().size());
+            assertEquals(0, gameDatabase.getGamesList().size());
         }
         catch (DataAccessException e)
         {
@@ -123,14 +123,14 @@ public class GameServiceTests {
     {
         try
         {
-            AUTH_DATABASE.clear();
-            USER_DATABASE.clear();
+            authDatabase.clear();
+            userDatabase.clear();
             var authToken = makeUser();
-            GAME_DATABASE.clear();
+            gameDatabase.clear();
             var createGameResultOne = service.createGame(new CreateGameRequest(authToken,game1));
             var createGameResultTwo = service.createGame(new CreateGameRequest(authToken, game2));
-            var gameOneData = GAME_DATABASE.getGame(createGameResultOne.gameID());
-            var gameTwoData = GAME_DATABASE.getGame(createGameResultTwo.gameID());
+            var gameOneData = gameDatabase.getGame(createGameResultOne.gameID());
+            var gameTwoData = gameDatabase.getGame(createGameResultTwo.gameID());
             var listResult = service.listGames(new ListGamesRequest(authToken));
             assertEquals(2,listResult.games().size());
         }

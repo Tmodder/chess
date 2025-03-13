@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTests {
 
-    private final AuthDAO AUTH_DATABASE = new MemoryAuthDAO();
-    private final UserDAO USER_DATABASE = new MemoryUserDAO();
-    private final UserService service = new UserService(USER_DATABASE, AUTH_DATABASE);
+    private final AuthDAO authDatabase = new MemoryAuthDAO();
+    private final UserDAO userDatabase = new MemoryUserDAO();
+    private final UserService service = new UserService(userDatabase, authDatabase);
     private final String username = "bob";
     private final String password = "1234";
     private final String email = "bob@bob.com";
@@ -23,7 +23,7 @@ public class UserServiceTests {
     @Order(1)
     public void registerAddsUserToDb()
     {
-        assertDoesNotThrow(()->USER_DATABASE.findUser(username));
+        assertDoesNotThrow(()->userDatabase.findUser(username));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class UserServiceTests {
     {
         var req = new LoginRequest(username, password);
         var result = service.loginService(req);
-        assertDoesNotThrow(() -> AUTH_DATABASE.findAuth(result.authToken()));
+        assertDoesNotThrow(() -> authDatabase.findAuth(result.authToken()));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class UserServiceTests {
     public void logoutRemovesUserFromAuthDb() throws DataAccessException {
         var loginResult = service.loginService(new LoginRequest(username,password));
         service.logoutService(new LogoutRequest(loginResult.authToken()));
-        assertNull(AUTH_DATABASE.findAuth(loginResult.authToken()));
+        assertNull(authDatabase.findAuth(loginResult.authToken()));
     }
 
     @Test

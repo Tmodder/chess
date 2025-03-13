@@ -9,19 +9,19 @@ import model.Authtoken;
 import java.util.UUID;
 
 public class UserService {
-    private final UserDAO USER_DATABASE;
-    private final AuthDAO AUTH_DATABASE;
+    private final UserDAO userDatabase;
+    private final AuthDAO authDatabase;
 
-    public UserService(UserDAO USER_DATABASE, AuthDAO AUTH_DATABASE) {
-        this.USER_DATABASE = USER_DATABASE;
-        this.AUTH_DATABASE = AUTH_DATABASE;
+    public UserService(UserDAO userDatabase, AuthDAO authDatabase) {
+        this.userDatabase = userDatabase;
+        this.authDatabase = authDatabase;
     }
 
     public RegisterResult registerService(RegisterRequest req) throws ServiceError
     {
         try
         {
-            if(USER_DATABASE.findUser(req.username()) != null)
+            if(userDatabase.findUser(req.username()) != null)
             {
                 throw new ServiceError("Error: already taken");
             }
@@ -31,10 +31,10 @@ public class UserService {
                 throw new ServiceError("Error: bad request");
             }
             var newUser = new User(req.username(), makeHash(req.password()), req.email());
-            USER_DATABASE.createUser(newUser);
+            userDatabase.createUser(newUser);
             var auth = generateToken();
             var newToken = new Authtoken(auth, req.username());
-            AUTH_DATABASE.createAuth(newToken);
+            authDatabase.createAuth(newToken);
             return new RegisterResult(req.username(),auth);
         }
 
@@ -49,7 +49,7 @@ public class UserService {
     {
         try
         {
-            var user = USER_DATABASE.findUser(req.username());
+            var user = userDatabase.findUser(req.username());
             if (user == null) {
                 throw new ServiceError("Error: unauthorized");
             }
@@ -58,7 +58,7 @@ public class UserService {
             }
             var auth = generateToken();
             var newToken = new Authtoken(auth, req.username());
-            AUTH_DATABASE.createAuth(newToken);
+            authDatabase.createAuth(newToken);
             return new LoginResult(req.username(),auth);
         }
         catch (DataAccessException e)
@@ -72,12 +72,12 @@ public class UserService {
     public void logoutService(LogoutRequest req) throws ServiceError {
         try
         {
-            var token = AUTH_DATABASE.findAuth(req.authToken());
+            var token = authDatabase.findAuth(req.authToken());
             if (token == null)
             {
                 throw new DataAccessException("Token is null");
             }
-            AUTH_DATABASE.deleteAuth(token);
+            authDatabase.deleteAuth(token);
         } catch (DataAccessException e) {
             throw new ServiceError("Error: unauthorized");
         }

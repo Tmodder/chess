@@ -1,23 +1,23 @@
 package service;
 import dataaccess.*;
 public class ClearService {
-    private final UserDAO USER_DATABASE;
-    private final AuthDAO AUTH_DATABASE;
-    private final GameDAO GAME_DATABASE;
+    private final UserDAO userDatabase;
+    private final AuthDAO authDatabase;
+    private final GameDAO gameDatabase;
 
-    public ClearService(UserDAO USER_DATABASE, AuthDAO AUTH_DATABASE, GameDAO GAME_DATABASE) {
-        this.USER_DATABASE = USER_DATABASE;
-        this.AUTH_DATABASE = AUTH_DATABASE;
-        this.GAME_DATABASE = GAME_DATABASE;
+    public ClearService(UserDAO userDatabase, AuthDAO authDatabase, GameDAO gameDatabase) {
+        this.userDatabase = userDatabase;
+        this.authDatabase = authDatabase;
+        this.gameDatabase = gameDatabase;
     }
 
     public void runClear()
     {
         try
         {
-            USER_DATABASE.clear();
-            AUTH_DATABASE.clear();
-            GAME_DATABASE.clear();
+            userDatabase.clear();
+            authDatabase.clear();
+            gameDatabase.clear();
         }
         catch (DataAccessException e)
         {

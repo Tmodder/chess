@@ -9,21 +9,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClearServiceTest {
-    private final AuthDAO AUTH_DATABASE = new MemoryAuthDAO();
-    private final UserDAO USER_DATABASE = new MemoryUserDAO();
-    private final UserService user = new UserService(USER_DATABASE, AUTH_DATABASE);
-    private final GameDAO GAME_DATABASE = new MemoryGameDAO();
-    private final GameService game = new GameService(AUTH_DATABASE,GAME_DATABASE);
-    private final ClearService service = new ClearService(USER_DATABASE, AUTH_DATABASE, GAME_DATABASE);
+    private final AuthDAO authDatabase = new MemoryAuthDAO();
+    private final UserDAO userDatabase = new MemoryUserDAO();
+    private final UserService user = new UserService(userDatabase, authDatabase);
+    private final GameDAO gameDatabase = new MemoryGameDAO();
+    private final GameService game = new GameService(authDatabase,gameDatabase);
+    private final ClearService service = new ClearService(userDatabase, authDatabase, gameDatabase);
     static String authToken;
     static String username = "bob";
     public void fillDb()
     {
         try
         {
-            USER_DATABASE.clear();
-            AUTH_DATABASE.clear();
-            GAME_DATABASE.clear();
+            userDatabase.clear();
+            authDatabase.clear();
+            gameDatabase.clear();
             var registerRes = user.registerService(new RegisterRequest(username,"password","email"));
             authToken = registerRes.authToken();
             game.createGame(new CreateGameRequest(authToken,"bobs game"));
@@ -40,9 +40,9 @@ public class ClearServiceTest {
         try {
             fillDb();
             service.runClear();
-            assertEquals(0, GAME_DATABASE.getGamesList().size());
-            assertNull(AUTH_DATABASE.findAuth(authToken));
-            assertNull(USER_DATABASE.findUser(username));
+            assertEquals(0, gameDatabase.getGamesList().size());
+            assertNull(authDatabase.findAuth(authToken));
+            assertNull(userDatabase.findUser(username));
         }
         catch (DataAccessException e)
         {

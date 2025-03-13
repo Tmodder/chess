@@ -54,11 +54,11 @@ class SQLGameDAOTests
     }
     @Test
     @Order(4)
-    void getGameById() {
+    void getGameTwiceById() {
         try
         {
             int gameId = dao.createGame(new Game(-1,null,null,gameName,game));
-            assertNotNull(dao.getGame(gameId));
+            assertEquals(dao.getGame(gameId).gameName(),dao.getGame(gameId).gameName());
         }
         catch (DataAccessException e)
         {
