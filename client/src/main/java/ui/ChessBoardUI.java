@@ -25,9 +25,13 @@ public class ChessBoardUI
         out.print(EscapeSequences.SET_TEXT_BOLD);
         ChessBoard gameBoard = new ChessBoard();
         gameBoard.resetBoard();
+
+        //Split string board representation into arrays
         String board = gameBoard.toString();
         String [] rows = board.split("\n");
         SquareColor squareColor = SquareColor.WHITE;
+        String[] columnList = {"a","b","c","d","e","f","g","h"};
+        drawHeader(columnList, out);
         for(int i = 0; i < 8; i++)
         {
             drawRow(squareColor,rows[i],out);
@@ -36,7 +40,21 @@ public class ChessBoardUI
             out.print("\n");
 
         }
+        drawHeader(columnList, out);
 
+    }
+    public void drawHeader(String [] columnList, PrintStream out)
+    {
+        out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+        for (int i = 0; i < 8; i++)
+        {
+            out.print(" ");
+            out.print(columnList[i]);
+            out.print(" ");
+        }
+        out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+        out.print("\n");
     }
     public void drawRow(SquareColor initColor, String row, PrintStream out)
     {
@@ -61,11 +79,11 @@ public class ChessBoardUI
     {
         if (squareColor == SquareColor.BLACK)
         {
-            out.print(EscapeSequences.SET_BG_COLOR_BLUE);
+            out.print(EscapeSequences.SET_BG_COLOR_RED);
         }
         else if (squareColor == SquareColor.WHITE)
         {
-            out.print(EscapeSequences.SET_BG_COLOR_RED);
+            out.print(EscapeSequences.SET_BG_COLOR_BLUE);
         }
 
         else {
