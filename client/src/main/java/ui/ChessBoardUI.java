@@ -25,7 +25,7 @@ public class ChessBoardUI
         out.print(EscapeSequences.SET_TEXT_BOLD);
         ChessBoard gameBoard = new ChessBoard();
         gameBoard.resetBoard();
-
+        //TODO add black mode reverse game board reverse header and sides list and starting color
         //Split string board representation into arrays
         String board = gameBoard.toString();
         String [] rows = board.split("\n");
@@ -34,7 +34,9 @@ public class ChessBoardUI
         drawHeader(columnList, out);
         for(int i = 0; i < 8; i++)
         {
+            drawSidebar(i+1,false,out);
             drawRow(squareColor,rows[i],out);
+            drawSidebar(i+1,false,out);
             out.print(EscapeSequences.SET_BG_COLOR_BLACK);
             squareColor = swapColor(squareColor);
             out.print("\n");
@@ -43,18 +45,33 @@ public class ChessBoardUI
         drawHeader(columnList, out);
 
     }
+
     public void drawHeader(String [] columnList, PrintStream out)
     {
         out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+        //three empty spaces so a starts at first column
+        out.print("   ");
         for (int i = 0; i < 8; i++)
         {
             out.print(" ");
             out.print(columnList[i]);
             out.print(" ");
         }
+        //three spaces to complete the square
+        out.print("   ");
         out.print(EscapeSequences.SET_BG_COLOR_BLACK);
         out.print("\n");
+    }
+
+    public void drawSidebar(int index, boolean isReversed, PrintStream out)
+    {
+        out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+        out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
+        int rank = isReversed ? 8 - index : index;
+        out.print(" ");
+        out.print(rank);
+        out.print(" ");
     }
     public void drawRow(SquareColor initColor, String row, PrintStream out)
     {
