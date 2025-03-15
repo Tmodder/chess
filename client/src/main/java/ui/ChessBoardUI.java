@@ -1,7 +1,6 @@
 package ui;
 
-import chess.ChessGame;
-import chess.ChessPiece;
+import chess.ChessBoard;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -14,84 +13,51 @@ public class ChessBoardUI
         WHITE
     }
 
-    public static void main(String[] args)
-    {
-       var board = new ChessBoardUI();
+    public static void main(String[] args) {
+        var board = new ChessBoardUI();
         board.drawBoard();
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        out.print("\n");
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        out.print("\n");
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        out.print("\n");
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        out.print("\n");
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        out.print("\n");
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        board.drawSquare(SquareColor.BLACK,'b',out);
-        board.drawSquare(SquareColor.WHITE,'Q',out);
-        out.print("\n");
     }
+
     public void drawBoard()
     {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(EscapeSequences.ERASE_SCREEN);
+        out.print(EscapeSequences.SET_TEXT_BOLD);
+        ChessBoard gameBoard = new ChessBoard();
+        gameBoard.resetBoard();
+        String board = gameBoard.toString();
+        String [] rows = board.split("\n");
+        SquareColor squareColor = SquareColor.WHITE;
+        for(int i = 0; i < 8; i++)
+        {
+            drawRow(squareColor,rows[i],out);
+            out.print(EscapeSequences.SET_BG_COLOR_BLACK);
+            squareColor = swapColor(squareColor);
+            out.print("\n");
 
-        //Black or white parameter will determine order of rank and file(normal or reverse) as well as which to start with
-        //print header
-        //while(loop 8 times)
-        //increment row count
-        //print row(row count,startwithblack or white)
-        //print header
+        }
 
     }
-    public void drawRow()
+    public void drawRow(SquareColor initColor, String row, PrintStream out)
     {
-
+        SquareColor color = initColor;
+        char [] rowPieces = row.toCharArray();
+        for(int i = 1; i < rowPieces.length; i++)
+        {
+            char currChar = rowPieces[i-1];
+            if ( currChar == '[' || currChar == ']' || currChar == ' ')
+            {
+                continue;
+            }
+            if (currChar == '~')
+            {
+                currChar = ' ';
+            }
+            drawSquare(color,currChar,out);
+            color = swapColor(color);
+        }
     }
-    public void drawSquare(SquareColor squareColor,Character piece,PrintStream out)
+    public void drawSquare(SquareColor squareColor,char piece, PrintStream out)
     {
         if (squareColor == SquareColor.BLACK)
         {
@@ -118,6 +84,19 @@ public class ChessBoardUI
         out.print(" ");
         //get the current
     }
+    private SquareColor swapColor(SquareColor color)
+    {
+        if (color == SquareColor.BLACK)
+        {
+            color = SquareColor.WHITE;
+        }
+        else
+        {
+            color = SquareColor.BLACK;
+        }
+        return color;
+    }
+
     //Convert this to emoji converter later
 //    private static String convertCharToType(char c, ChessGame.TeamColor color) {
 //        c = Character.toLowerCase(c);
