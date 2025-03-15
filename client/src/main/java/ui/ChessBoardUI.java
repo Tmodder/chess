@@ -4,6 +4,9 @@ import chess.ChessBoard;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ChessBoardUI
 {
@@ -15,28 +18,39 @@ public class ChessBoardUI
 
     public static void main(String[] args) {
         var board = new ChessBoardUI();
-        board.drawBoard();
+        board.drawBoard(false);
     }
 
-    public void drawBoard()
+    public void drawBoard(boolean whitePerspective)
     {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(EscapeSequences.ERASE_SCREEN);
         out.print(EscapeSequences.SET_TEXT_BOLD);
         ChessBoard gameBoard = new ChessBoard();
         gameBoard.resetBoard();
-        //TODO add black mode reverse game board reverse header and sides list and starting color
+
         //Split string board representation into arrays
         String board = gameBoard.toString();
-        String [] rows = board.split("\n");
         SquareColor squareColor = SquareColor.WHITE;
-        String[] columnList = {"a","b","c","d","e","f","g","h"};
+        String [] columnArray = {"a","b","c","d","e","f","g","h"};
+        ArrayList<String> columnList = new ArrayList<>(Arrays.asList(columnArray));
+        boolean isReversed = false;
+        if (!whitePerspective)
+        {
+            var sBuilder = new StringBuilder(board);
+            sBuilder.reverse();
+            board = String.valueOf(sBuilder);
+            Collections.reverse(columnList);
+            isReversed = true;
+        }
+        String [] rows = board.split("\n");
+
         drawHeader(columnList, out);
         for(int i = 0; i < 8; i++)
         {
-            drawSidebar(i+1,false,out);
+            drawSidebar(i+1,isReversed,out);
             drawRow(squareColor,rows[i],out);
-            drawSidebar(i+1,false,out);
+            drawSidebar(i+1,isReversed,out);
             out.print(EscapeSequences.SET_BG_COLOR_BLACK);
             squareColor = swapColor(squareColor);
             out.print("\n");
@@ -46,7 +60,7 @@ public class ChessBoardUI
 
     }
 
-    public void drawHeader(String [] columnList, PrintStream out)
+    public void drawHeader(ArrayList<String> columnList, PrintStream out)
     {
         out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
@@ -55,7 +69,7 @@ public class ChessBoardUI
         for (int i = 0; i < 8; i++)
         {
             out.print(" ");
-            out.print(columnList[i]);
+            out.print(columnList.get(i));
             out.print(" ");
         }
         //three spaces to complete the square
