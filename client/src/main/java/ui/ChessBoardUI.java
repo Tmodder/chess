@@ -40,6 +40,8 @@ public class ChessBoardUI
             var sBuilder = new StringBuilder(board);
             sBuilder.reverse();
             board = String.valueOf(sBuilder);
+            //get rid of newline character
+            board = board.substring(1);
             Collections.reverse(columnList);
             isReversed = true;
         }
@@ -48,9 +50,9 @@ public class ChessBoardUI
         drawHeader(columnList, out);
         for(int i = 0; i < 8; i++)
         {
-            drawSidebar(i+1,isReversed,out);
+            drawSidebar(8-i,isReversed,out);
             drawRow(squareColor,rows[i],out);
-            drawSidebar(i+1,isReversed,out);
+            drawSidebar(8-i,isReversed,out);
             out.print(EscapeSequences.SET_BG_COLOR_BLACK);
             squareColor = swapColor(squareColor);
             out.print("\n");
@@ -82,7 +84,7 @@ public class ChessBoardUI
     {
         out.print(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
         out.print(EscapeSequences.SET_TEXT_COLOR_WHITE);
-        int rank = isReversed ? 8 - index : index;
+        int rank = isReversed ? 9 - index : index;
         out.print(" ");
         out.print(rank);
         out.print(" ");
