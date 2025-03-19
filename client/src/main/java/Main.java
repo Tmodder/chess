@@ -1,4 +1,5 @@
 import chess.*;
+import ui.ClientUI;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,5 +12,7 @@ public class Main {
         board.addPiece(pos2, piece2);
         var movesList = piece.pieceMoves(board,position);
         System.out.println("♕ 240 Chess Client: " + board + movesList);
+        var ui = new ClientUI();
+        ui.runMenu();
     }
 }

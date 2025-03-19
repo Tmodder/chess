@@ -16,11 +16,6 @@ public class ChessBoardUI
         WHITE
     }
 
-    public static void main(String[] args) {
-        var board = new ChessBoardUI();
-        board.drawBoard(false);
-    }
-
     public void drawBoard(boolean whitePerspective)
     {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -59,6 +54,10 @@ public class ChessBoardUI
 
         }
         drawHeader(columnList, out);
+        //reset
+        out.print(EscapeSequences.RESET_TEXT_COLOR);
+        out.print(EscapeSequences.RESET_TEXT_BOLD_FAINT);
+        out.print(EscapeSequences.RESET_BG_COLOR);
 
     }
 
