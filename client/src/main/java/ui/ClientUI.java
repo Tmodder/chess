@@ -9,7 +9,8 @@ public class ClientUI
     private final ChessBoardUI boardUI = new ChessBoardUI();
     public void runMenu()
     {
-        System.out.println("Play some dang chess");
+        System.out.println("♕ Lets play some freakin chess.");
+        System.out.println("Need some help? Type help and press enter");
         boolean keepPlaying = true;
         boolean loggedIn = false;
         while(keepPlaying)
@@ -31,40 +32,44 @@ public class ClientUI
 
         while (true) {
             var scanner = new Scanner(System.in);
+            System.out.print("[LOGGED_OUT] >>>");
             String command = scanner.nextLine();
             String[] args = command.split(" ");
-            switch (args[0]) {
-                case "help":
-                    if(args.length != 1)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    preLoginHelp();
-                    break;
-                case "login":
-                    if(args.length != 3)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    login(args[1],args[2]);
-                    return true;
-                case "register":
-                    if(args.length != 4)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    register(args[1],args[2],args[3]);
-                    return true;
-                case "quit":
-                    if(args.length != 1)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    quit();
-                    return false;
-                default:
-                    throw new RuntimeException("aint no good command bruh");
+            try
+            {
+                switch (args[0]) {
+                    case "help":
+                        assert args.length == 1;
+                        preLoginHelp();
+                        break;
+                    case "login":
+                        if(args.length != 3)
+                        {
+                            throw new IllegalArgumentException("Illegal number of arguments");
+                        }
+                        login(args[1],args[2]);
+                        return true;
+                    case "register":
+                        if(args.length != 4)
+                        {
+                            throw new IllegalArgumentException("Illegal number of arguments");
+                        }
+                        register(args[1],args[2],args[3]);
+                        return true;
+                    case "quit":
+                        assert args.length == 1;
+                        quit();
+                        return false;
+                    default:
+                        throw new IllegalArgumentException("that aint no good command bruh");
+                }
             }
+            catch(IllegalArgumentException e)
+            {
+                System.out.println(e.getMessage());
+                System.out.println("Stop, get some help");
+            }
+
         }
     }
     private void quit()
@@ -87,55 +92,56 @@ public class ClientUI
     private void runPostLogin()
     {
         while (true) {
+            System.out.print("[LOGGED_IN] >>>");
             var scanner = new Scanner(System.in);
             String command = scanner.nextLine();
             String[] args = command.split(" ");
-            switch (args[0]) {
-                case "help":
-                    if(args.length != 1)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    postLoginHelp();
-                    break;
-                case "logout":
-                    if(args.length != 1)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    logout();
-                    return;
-                case "create":
-                    if(args.length != 2)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    createGame(args[1]);
-                    break;
-                case "list":
-                    if(args.length != 1)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    listGames();
-                    break;
-                case "play":
-                    if(args.length != 2)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    playGame(args[1]);
-                    break;
-                case "observe":
-                    if(args.length != 2)
-                    {
-                        throw new RuntimeException("Incorrect arg count");
-                    }
-                    observeGame(args[1]);
-                    break;
-                default:
-                    throw new RuntimeException("aint no good command bruh");
+            try
+            {
+                switch (args[0]) {
+                    case "help":
+                        assert args.length == 1;
+                        postLoginHelp();
+                        break;
+                    case "logout":
+                        assert args.length == 1;
+                        logout();
+                        return;
+                    case "create":
+                        if(args.length != 2)
+                        {
+                            throw new IllegalArgumentException("Illegal number of arguments");
+                        }
+                        createGame(args[1]);
+                        break;
+                    case "list":
+                        assert args.length == 1;
+                        listGames();
+                        break;
+                    case "play":
+                        if(args.length != 2)
+                        {
+                            throw new IllegalArgumentException("Illegal number of arguments");
+                        }
+                        playGame(args[1]);
+                        break;
+                    case "observe":
+                        if(args.length != 2)
+                        {
+                            throw new IllegalArgumentException("Illegal number of arguments");
+                        }
+                        observeGame(args[1]);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("aint no good command bruh");
+                }
             }
+            catch (IllegalArgumentException e)
+            {
+                System.out.println(e.getMessage());
+                System.out.println("Stop, get some help");
+            }
+
         }
     }
 
