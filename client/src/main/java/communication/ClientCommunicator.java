@@ -30,7 +30,7 @@ public class ClientCommunicator
         } catch (ResponseException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
+            throw new ResponseException(500,ex.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class ClientCommunicator
             try (InputStream respErr = http.getErrorStream()) {
                 //not sure how to read this
                 if (respErr != null) {
-                    throw new ResponseException(900,respErr.toString());
+                    throw ResponseException.fromJson(respErr);
                 }
             }
 

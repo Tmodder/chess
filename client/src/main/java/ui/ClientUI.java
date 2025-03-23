@@ -1,5 +1,6 @@
 package ui;
 
+import communication.ResponseException;
 import communication.ServerFacade;
 
 import java.io.IOException;
@@ -71,6 +72,10 @@ public class ClientUI
             {
                 System.out.println(e.getMessage());
                 System.out.println("Stop, get some help");
+            }
+            catch(ResponseException e)
+            {
+                System.out.println(e.getMessage());
             }
 
         }
@@ -145,6 +150,12 @@ public class ClientUI
             {
                 System.out.println(e.getMessage());
                 System.out.println("Stop, get some help");
+            }
+            catch(ResponseException e)
+            {
+                System.out.println(e.getStatus());
+                System.out.println(" ");
+                System.out.println(e.getMessage());
             }
 
         }
