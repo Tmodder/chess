@@ -166,8 +166,8 @@ public class ClientUI
     }
     private void listGames()
     {
-        facade.listGames();
-        System.out.println("Game 1 featuring ur mom\n game 2 feature your dad\n :)");
+        String out = facade.listGames();
+        System.out.print(out);
     }
     private void playGame(String gameNumber)
     {

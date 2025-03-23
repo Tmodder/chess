@@ -21,7 +21,7 @@ public class ClientCommunicator
             //write header as needed
             if (auth != null)
             {
-                http.setRequestProperty("Authorization",auth);
+                http.setRequestProperty("authorization",auth);
             }
             writeBody(request, http);
             http.connect();

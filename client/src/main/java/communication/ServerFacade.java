@@ -32,12 +32,39 @@ public class ServerFacade
 
     public void createGame(String gameName)
     {
+        assert authToken != null;
         var res = communicator.makeRequest("POST","/game", new CreateGameRequest(authToken,gameName), CreateGameResult.class,authToken);
     }
 
-    public void listGames()
+    public String listGames()
     {
+        assert authToken != null;
+        var stringOut = new StringBuilder();
         var res = communicator.makeRequest("GET","/game", new ListGamesRequest(authToken), ListGamesResult.class, authToken);
+        if (res.games().isEmpty())
+        {
+            return null;
+        }
+        for (int i = 0; i < res.games().size(); i++)
+        {
+            var game = res.games().get(i);
+            stringOut.append(i);
+            stringOut.append(". ");
+            stringOut.append(game.gameName());
+            stringOut.append(" ");
+            if (game.whiteUsername() != null)
+            {
+                stringOut.append("White: ");
+                stringOut.append(game.whiteUsername());
+            }
+            if (game.blackUsername() != null)
+            {
+                stringOut.append("Black: ");
+                stringOut.append(game.blackUsername());
+            }
+
+        }
+        return stringOut.toString();
     }
 
 

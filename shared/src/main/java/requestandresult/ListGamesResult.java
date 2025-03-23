@@ -4,7 +4,7 @@ import model.Game;
 import java.util.ArrayList;
 
 public record ListGamesResult(ArrayList<SingleGameResult> games) {
-    record SingleGameResult(int gameID, String whiteUsername, String blackUsername, String gameName )
+    public record SingleGameResult(int gameID, String whiteUsername, String blackUsername, String gameName )
     {}
     public static ListGamesResult convertGameModelToResult(ArrayList<Game> gamesList)
     {
