@@ -1,3 +1,5 @@
+package communication;
+
 import java.io.*;
 import java.net.*;
 import com.google.gson.Gson;
@@ -9,16 +11,18 @@ public class ClientCommunicator
     {
         serverUrl = url;
     }
-    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass,String auth) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             //should it always be true or does it matter
             http.setDoOutput(true);
-
             //write header as needed
-            //http.setRequestProperty("Authorization",authToken);
+            if (auth != null)
+            {
+                http.setRequestProperty("Authorization",auth);
+            }
             writeBody(request, http);
             http.connect();
             throwIfNotSuccessful(http);

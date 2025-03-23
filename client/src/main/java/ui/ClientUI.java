@@ -1,5 +1,7 @@
 package ui;
 
+import communication.ServerFacade;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Scanner;
@@ -7,6 +9,7 @@ import java.util.Scanner;
 public class ClientUI
 {
     private final ChessBoardUI boardUI = new ChessBoardUI();
+    private final ServerFacade facade = new ServerFacade();
     public void runMenu()
     {
         System.out.println("♕ Lets play some freakin chess.");
@@ -83,10 +86,12 @@ public class ClientUI
 
     private void login(String username, String password)
     {
+        facade.login(username, password);
         System.out.println("Ok buddy your logged in");
     }
     private void register(String username, String password, String email)
     {
+        facade.register(username, password, email);
         System.out.println("Ok bro you registered dawg");
     }
     private void runPostLogin()
@@ -151,18 +156,22 @@ public class ClientUI
     }
     private void logout()
     {
+        facade.logout();
         System.out.println("logging out!");
     }
     private void createGame(String gameName)
     {
-        System.out.println("Game created (definitely not a lie) :)");
+        facade.createGame(gameName);
+        System.out.println("Game created :)");
     }
     private void listGames()
     {
+        facade.listGames();
         System.out.println("Game 1 featuring ur mom\n game 2 feature your dad\n :)");
     }
     private void playGame(String gameNumber)
     {
+        facade.playGame();
         System.out.println("playing game");
         boardUI.drawBoard(true);
     }

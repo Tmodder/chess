@@ -1,3 +1,5 @@
+package communication;
+
 public class ResponseException extends RuntimeException
 {
     private final int statusCode;
