@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class ClientUI
 {
     private final ChessBoardUI boardUI = new ChessBoardUI();
-    private final ServerFacade facade = new ServerFacade();
+    private final ServerFacade facade = new ServerFacade(8080);
     public void runMenu()
     {
         System.out.println("♕ Lets play some freakin chess.");

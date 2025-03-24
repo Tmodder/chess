@@ -7,8 +7,13 @@ import java.util.ArrayList;
 public class ServerFacade
 {
     private final ArrayList<Integer> gameIdList = new ArrayList<>();
-    private final  ClientCommunicator communicator = new ClientCommunicator("http://localhost:8080");
+    private final  ClientCommunicator communicator;
     private String authToken;
+
+    public ServerFacade(int port) {
+        String url = "http://localhost:" + String.valueOf(port);
+        communicator = new ClientCommunicator(url);
+    }
 
     public void login(String username, String password)
     {
