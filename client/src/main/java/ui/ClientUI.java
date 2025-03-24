@@ -76,6 +76,8 @@ public class ClientUI
             }
             catch(ResponseException e)
             {
+                System.out.println(e.getStatus());
+                System.out.println(" ");
                 System.out.println(e.getMessage());
             }
 
@@ -106,7 +108,7 @@ public class ClientUI
     private void register(String username, String password, String email)
     {
         facade.register(username, password, email);
-        System.out.println("Ok bro you registered dawg");
+        System.out.println("Ok bro you registered");
     }
     private void runPostLogin()
     {
@@ -147,7 +149,7 @@ public class ClientUI
                     case "observe":
                         if(args.length != 2)
                         {
-                            throw new IllegalArgumentException("Illegal number of arguments");
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
                         observeGame(args[1]);
                         break;

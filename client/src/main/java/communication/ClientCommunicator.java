@@ -33,11 +33,13 @@ public class ClientCommunicator
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
-        } catch (ResponseException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new ResponseException(500,ex.getMessage());
+
+        } catch (IOException | URISyntaxException ex) {
+            throw new ResponseException(1000,ex.getMessage());
         }
+//         catch (Exception ex) {
+//            throw new ResponseException(,ex.getMessage());
+//        }
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
