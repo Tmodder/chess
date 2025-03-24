@@ -80,17 +80,13 @@ public class ClientUI
                 {
                     System.out.println("Login failed. Password or username does not match");
                 }
-                if(e.getStatus() == 403)
+                else if(e.getStatus() == 403)
                 {
                     System.out.println("Username already taken. Please try a different one");
                 }
-                if(e.getStatus() == 500)
+                else
                 {
                     System.out.println("We are having technical difficulties, please try again later!");
-                }
-                else {
-                    System.out.println(e.getStatus());
-                    System.out.println(e.getMessage());
                 }
             }
         }
@@ -168,6 +164,8 @@ public class ClientUI
                     default:
                         throw new IllegalArgumentException("Command not found");
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Number not recognized, use digits for game index not words(\"1\" not \"one\")");
             }
             catch (IllegalArgumentException e)
             {
@@ -184,14 +182,14 @@ public class ClientUI
                 {
                 System.out.println("Color already taken, try a different color or game");
                 }
-                if(e.getStatus() == 500)
+                else if(e.getStatus() == 400)
+                {
+                    System.out.println("That color does not exist, choose black or white");
+                }
+                else
                 {
                     System.out.println("We are having technical difficulties, please try again later!");
                 }
-            else {
-                System.out.println(e.getStatus());
-                System.out.println(e.getMessage());
-            }
 
             }
 
@@ -239,6 +237,7 @@ public class ClientUI
     }
     private void observeGame(String gameNumber)
     {
+        facade.observeGame(Integer.parseInt(gameNumber));
         System.out.println("observing game " + gameNumber);
         boardUI.drawBoard(true);
     }

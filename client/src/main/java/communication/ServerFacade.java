@@ -43,6 +43,7 @@ public class ServerFacade
     public String listGames()
     {
         assert authToken != null;
+        gameIdList.clear();
         var stringOut = new StringBuilder();
         var res = communicator.makeRequest("GET","/game", new ListGamesRequest(authToken), ListGamesResult.class, authToken);
         if (res.games().isEmpty())
@@ -95,6 +96,13 @@ public class ServerFacade
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
 
 
+    }
+
+    public void observeGame(int gameNumber)
+    {
+        int index = gameNumber -1;
+        int gameId = gameIdList.get(index);
+        //finish implementation in phase 6
     }
 
     public void clear()
