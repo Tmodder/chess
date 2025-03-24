@@ -68,7 +68,7 @@ public class DatabaseManager {
                     """;
             var statementGamesList = """
                     CREATE TABLE IF NOT EXISTS games_list (
-                    game_id INT NOT NULL,
+                    game_id INT NOT NULL AUTO_INCREMENT,
                     game_name VARCHAR(255) NOT NULL,
                     white_username VARCHAR(255),
                     black_username VARCHAR(255),

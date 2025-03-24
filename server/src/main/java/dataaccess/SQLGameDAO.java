@@ -4,11 +4,11 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.Game;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class SQLGameDAO implements GameDAO
 {
-    private int gameCounter = 0;
     public SQLGameDAO()
     {
         try
@@ -45,19 +45,19 @@ public class SQLGameDAO implements GameDAO
         DatabaseManager.createTables();
         String gameName = newGame.gameName();
         String gameJson = serializeGame(newGame.game());
-        int gameID = this.gameCounter + 1000;
-        this.gameCounter += 1;
-        String insertGameDataStatement = "INSERT INTO games_list VALUES(?,?,NULL,NULL)";
+        String insertGameDataStatement = "INSERT INTO games_list (game_name) VALUES(?)";
         String insertGamesListStatement = "INSERT INTO game_data VALUES(?,?)";
+        int gameID = 0;
         try(var conn = DatabaseManager.getConnection())
         {
-           try (var stmt = conn.prepareStatement(insertGameDataStatement))
+           try (var stmt = conn.prepareStatement(insertGameDataStatement, Statement.RETURN_GENERATED_KEYS))
            {
-               stmt.setInt(1,gameID);
-               stmt.setString(2,gameName);
+               stmt.setString(1,gameName);
                stmt.executeUpdate();
+               var rs = stmt.getGeneratedKeys();
+               rs.next();
+               gameID = rs.getInt(1);
            }
-
            try (var stmtTwo = conn.prepareStatement(insertGamesListStatement))
            {
                stmtTwo.setInt(1,gameID);
