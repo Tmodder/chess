@@ -183,6 +183,8 @@ public class ClientUI
         System.out.println("     Observe a game with the given ID");
         System.out.println("help");
         System.out.println("    Print out this menu");
+        System.out.println("logout");
+        System.out.println("    Log out of your account");
     }
     private void logout()
     {
