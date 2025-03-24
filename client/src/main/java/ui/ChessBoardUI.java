@@ -147,17 +147,5 @@ public class ChessBoardUI
         return color;
     }
 
-    //Convert this to emoji converter later
-//    private static String convertCharToType(char c, ChessGame.TeamColor color) {
-//        c = Character.toLowerCase(c);
-//        ChessPiece.PieceType type = switch (c) {
-//            case 'b'-> ChessPiece.PieceType.BISHOP;
-//            case 'q'-> ChessPiece.PieceType.QUEEN;
-//            case 'k'-> ChessPiece.PieceType.KING;
-//            case 'p'-> ChessPiece.PieceType.PAWN;
-//            case 'r'-> ChessPiece.PieceType.ROOK;
-//            case 'n'-> ChessPiece.PieceType.KNIGHT;
-//            default -> throw new IllegalStateException("Unexpected value: " + c);
-//        };
 
 }

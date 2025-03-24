@@ -40,9 +40,9 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void registerCreatesAndLoginsIn() {
+    public void registerMutipleUsers() {
         facade.register(userOne,passwordOne,emailOne);
-        Assertions.assertDoesNotThrow(facade::logout);
+        Assertions.assertDoesNotThrow(() -> facade.register(userTwo,passwordTwo,emailTwo));
     }
 
     @Test
@@ -50,6 +50,19 @@ public class ServerFacadeTests {
     {
         facade.register(userOne,passwordOne,emailOne);
         Assertions.assertThrows(ResponseException.class,() -> facade.register(userOne,passwordOne,emailOne));
+    }
+
+    @Test
+    public void registerbeforeLogoutDoesNotFail()
+    {
+        facade.register(userOne,passwordOne,emailOne);
+        Assertions.assertDoesNotThrow(facade::logout);
+    }
+
+    @Test
+    public void logoutFailsWithoutLogin()
+    {
+        Assertions.assertThrows(ResponseException.class,facade::logout);
     }
 
     @Test

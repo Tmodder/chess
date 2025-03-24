@@ -30,7 +30,6 @@ public class ServerFacade
 
     public void logout()
     {
-        assert authToken != null;
         var req = communicator.makeRequest("DELETE", "/session", new LogoutRequest(authToken),null,authToken);
         authToken = null;
     }
@@ -97,11 +96,6 @@ public class ServerFacade
 
 
     }
-
-//    public void observeGame ()
-//    {
-//
-//    }
 
     public void clear()
     {
