@@ -41,9 +41,6 @@ public class ClientCommunicator
             }
             throw new ResponseException(1000,ex.getMessage());
         }
-//         catch (Exception ex) {
-//            throw new ResponseException(,ex.getMessage());
-//        }
     }
 
     private static void writeBody(Object request, HttpURLConnection http) throws IOException {
