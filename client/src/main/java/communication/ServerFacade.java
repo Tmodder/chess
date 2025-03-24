@@ -33,7 +33,7 @@ public class ServerFacade
     public void createGame(String gameName)
     {
         assert authToken != null;
-        var res = communicator.makeRequest("POST","/game", new CreateGameRequest(authToken,gameName), CreateGameResult.class,authToken);
+        var res = communicator.makeRequest("POST","/game", new CreateGameRequest(authToken,gameName), CreateGameResult.class, authToken);
     }
 
     public String listGames()

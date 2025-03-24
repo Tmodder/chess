@@ -2,6 +2,8 @@ package communication;
 
 import java.io.*;
 import java.net.*;
+import java.util.Objects;
+
 import com.google.gson.Gson;
 
 public class ClientCommunicator
@@ -15,15 +17,19 @@ public class ClientCommunicator
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDoOutput(!Objects.equals(method, "GET"));
             http.setRequestMethod(method);
-            //should it always be true or does it matter
-            http.setDoOutput(true);
+
             //write header as needed
             if (auth != null)
             {
                 http.setRequestProperty("authorization",auth);
             }
-            writeBody(request, http);
+            if (http.getDoOutput())
+            {
+                writeBody(request, http);
+            }
+
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
