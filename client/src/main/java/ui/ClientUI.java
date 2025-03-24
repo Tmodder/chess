@@ -87,7 +87,15 @@ public class ClientUI
     }
     private void preLoginHelp()
         {
-            System.out.println("Here some help bro");
+            System.out.println("Options: ");
+            System.out.println("register <USERNAME> <PASSWORD> <EMAIL> ");
+            System.out.println("     Create your account");
+            System.out.println("login <USERNAME> <PASSWORD>");
+            System.out.println("     Login into your account");
+            System.out.println("quit");
+            System.out.println("     End your session");
+            System.out.println("help");
+            System.out.println("    Print out this menu");
         }
 
     private void login(String username, String password)
@@ -144,7 +152,7 @@ public class ClientUI
                         observeGame(args[1]);
                         break;
                     default:
-                        throw new IllegalArgumentException("aint no good command bruh");
+                        throw new IllegalArgumentException("Command not found");
                 }
             }
             catch (IllegalArgumentException e)
@@ -164,7 +172,17 @@ public class ClientUI
 
     private void postLoginHelp()
     {
-        System.out.println("Have some more help");
+        System.out.println("Options: ");
+        System.out.println("create <NAME>");
+        System.out.println("     Create a game with the given name");
+        System.out.println("list");
+        System.out.println("     Print out the list of games");
+        System.out.println("play <ID> [WHITE|BLACK]");
+        System.out.println("     Join a game with the given ID as white or black");
+        System.out.println("observe <ID>");
+        System.out.println("     Observe a game with the given ID");
+        System.out.println("help");
+        System.out.println("    Print out this menu");
     }
     private void logout()
     {
@@ -191,8 +209,8 @@ public class ClientUI
     }
     private void observeGame(String gameNumber)
     {
-        System.out.println("observing game");
-        boardUI.drawBoard(false);
+        System.out.println("observing game " + gameNumber);
+        boardUI.drawBoard(true);
     }
 
 
