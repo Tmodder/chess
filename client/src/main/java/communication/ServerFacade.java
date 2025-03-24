@@ -84,7 +84,8 @@ public class ServerFacade
     public void playGame(int gameNumber,String color)
     {
         //get gameId from facade vector
-        int gameId = gameIdList.get(gameNumber - 1);
+        int index = gameNumber -1;
+        int gameId = gameIdList.get(index);
 
         //joinGame with given color using id
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);

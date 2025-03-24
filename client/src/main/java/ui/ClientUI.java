@@ -50,14 +50,14 @@ public class ClientUI
                     case "login":
                         if(args.length != 3)
                         {
-                            throw new IllegalArgumentException("Illegal number of arguments");
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
                         login(args[1],args[2]);
                         return true;
                     case "register":
                         if(args.length != 4)
                         {
-                            throw new IllegalArgumentException("Illegal number of arguments");
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
                         register(args[1],args[2],args[3]);
                         return true;
@@ -66,7 +66,7 @@ public class ClientUI
                         quit();
                         return false;
                     default:
-                        throw new IllegalArgumentException("that aint no good command bruh");
+                        throw new IllegalArgumentException("Command not found");
                 }
             }
             catch(IllegalArgumentException e)
@@ -76,11 +76,19 @@ public class ClientUI
             }
             catch(ResponseException e)
             {
-                System.out.println(e.getStatus());
-                System.out.println(" ");
-                System.out.println(e.getMessage());
+                if(e.getStatus() == 401)
+                {
+                    System.out.println("Login failed. Password or username does not match");
+                }
+                if(e.getStatus() == 500)
+                {
+                    System.out.println("We are having technical difficulties, please try again later!");
+                }
+                else {
+                    System.out.println(e.getStatus());
+                    System.out.println(e.getMessage());
+                }
             }
-
         }
     }
     private void quit()
@@ -131,7 +139,7 @@ public class ClientUI
                     case "create":
                         if(args.length != 2)
                         {
-                            throw new IllegalArgumentException("Illegal number of arguments");
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
                         createGame(args[1]);
                         break;
@@ -142,7 +150,7 @@ public class ClientUI
                     case "play":
                         if(args.length != 3)
                         {
-                            throw new IllegalArgumentException("Illegal number of arguments");
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
                         playGame(args[1],args[2]);
                         break;
@@ -162,11 +170,25 @@ public class ClientUI
                 System.out.println(e.getMessage());
                 System.out.println("Stop, get some help");
             }
+            catch (IndexOutOfBoundsException e)
+            {
+                System.out.println("That game does not exist. Try a different one");
+            }
             catch(ResponseException e)
             {
+                if(e.getStatus() == 403)
+                {
+                System.out.println("Color already taken, try a different color or game");
+                }
+                if(e.getStatus() == 500)
+                {
+                    System.out.println("We are having technical difficulties, please try again later!");
+                }
+            else {
                 System.out.println(e.getStatus());
-                System.out.println(" ");
                 System.out.println(e.getMessage());
+            }
+
             }
 
         }

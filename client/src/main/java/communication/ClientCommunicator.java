@@ -35,6 +35,10 @@ public class ClientCommunicator
             return readBody(http, responseClass);
 
         } catch (IOException | URISyntaxException ex) {
+            if (ex instanceof ConnectException)
+            {
+                throw new ResponseException(500,"Server offline");
+            }
             throw new ResponseException(1000,ex.getMessage());
         }
 //         catch (Exception ex) {
@@ -58,7 +62,7 @@ public class ClientCommunicator
             try (InputStream respErr = http.getErrorStream()) {
                 //not sure how to read this
                 if (respErr != null) {
-                    throw ResponseException.fromJson(respErr);
+                    throw ResponseException.fromJson(respErr,status);
                 }
             }
 
