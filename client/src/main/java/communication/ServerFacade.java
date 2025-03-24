@@ -93,9 +93,14 @@ public class ServerFacade
 
     }
 
-    public void observeGame ()
-    {
+//    public void observeGame ()
+//    {
+//
+//    }
 
+    public void clear()
+    {
+        communicator.makeRequest("DELETE","/db",null,null,null);
     }
 
 }
