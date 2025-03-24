@@ -5,6 +5,7 @@ import communication.ServerFacade;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientUI
@@ -129,11 +130,11 @@ public class ClientUI
                         listGames();
                         break;
                     case "play":
-                        if(args.length != 2)
+                        if(args.length != 3)
                         {
                             throw new IllegalArgumentException("Illegal number of arguments");
                         }
-                        playGame(args[1]);
+                        playGame(args[1],args[2]);
                         break;
                     case "observe":
                         if(args.length != 2)
@@ -180,11 +181,13 @@ public class ClientUI
         String out = facade.listGames();
         System.out.print(out);
     }
-    private void playGame(String gameNumber)
+    private void playGame(String gameNumber, String color)
     {
-        facade.playGame();
-        System.out.println("playing game");
-        boardUI.drawBoard(true);
+        color = color.toUpperCase();
+        facade.playGame(Integer.parseInt(gameNumber),color);
+        System.out.print("playing game " + gameNumber +" as ");
+        System.out.println(color);
+        boardUI.drawBoard(Objects.equals(color, "WHITE"));
     }
     private void observeGame(String gameNumber)
     {

@@ -45,31 +45,50 @@ public class ServerFacade
         {
             return null;
         }
+        stringOut.append("Games List: \n");
         for (int i = 0; i < res.games().size(); i++)
         {
+
             var game = res.games().get(i);
-            stringOut.append(i);
+            gameIdList.add(game.gameID());
+            stringOut.append(i + 1);
             stringOut.append(". ");
             stringOut.append(game.gameName());
-            stringOut.append(" ");
+            stringOut.append("\n     ");
+            stringOut.append("White:");
             if (game.whiteUsername() != null)
             {
-                stringOut.append("White: ");
                 stringOut.append(game.whiteUsername());
             }
+            else
+            {
+                stringOut.append("Available");
+            }
+            stringOut.append(" ");
+            stringOut.append("Black:");
             if (game.blackUsername() != null)
             {
-                stringOut.append("Black: ");
                 stringOut.append(game.blackUsername());
             }
-
+            else
+            {
+                stringOut.append("Available");
+            }
+            stringOut.append("\n");
         }
+        stringOut.append("\n");
         return stringOut.toString();
     }
 
 
-    public void playGame()
+    public void playGame(int gameNumber,String color)
     {
+        //get gameId from facade vector
+        int gameId = gameIdList.get(gameNumber - 1);
+
+        //joinGame with given color using id
+        communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
+
 
     }
 
