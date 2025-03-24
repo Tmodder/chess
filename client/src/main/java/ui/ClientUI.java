@@ -80,6 +80,10 @@ public class ClientUI
                 {
                     System.out.println("Login failed. Password or username does not match");
                 }
+                if(e.getStatus() == 403)
+                {
+                    System.out.println("Username already taken. Please try a different one");
+                }
                 if(e.getStatus() == 500)
                 {
                     System.out.println("We are having technical difficulties, please try again later!");
