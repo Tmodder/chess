@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
 
+@ClientEndpoint
 public class WebSocketCommunicator extends Endpoint
 {
     private String authToken;
@@ -13,7 +14,7 @@ public class WebSocketCommunicator extends Endpoint
     public Session session;
     public WebSocketCommunicator() throws ResponseException {
         try {
-            URI uri = new URI("ws://localhpost:8080/ws");
+            URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
             this.session.addMessageHandler((MessageHandler.Whole<String>) System.out::println);
@@ -21,6 +22,7 @@ public class WebSocketCommunicator extends Endpoint
             throw new ResponseException(500, e.getMessage());
         }
     }
+    @OnMessage
         public void send (UserGameCommand command)
         {
             try {
@@ -30,10 +32,10 @@ public class WebSocketCommunicator extends Endpoint
                 throw new ResponseException(500,e.getMessage());
             }
         }
-
+        @OnOpen
         public void onOpen(Session session, EndpointConfig endpointConfig)
         {
-
+            System.out.print("Websocket open");
             send(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId));
         }
 }
