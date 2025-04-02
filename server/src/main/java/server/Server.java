@@ -39,7 +39,7 @@ public class Server {
         try
         {
             System.out.printf("Received: %s", message);
-            session.getRemote().sendString("WebSocket response: " + message);
+            session.getRemote().sendString(message);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
