@@ -17,21 +17,27 @@ public class WebSocketCommunicator extends Endpoint
             URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
-            this.session.addMessageHandler((MessageHandler.Whole<String>) System.out::println);
+            this.session.addMessageHandler((MessageHandler.Whole<String>) this::echo);
         } catch (Exception e) {
             throw new ResponseException(500, e.getMessage());
         }
     }
-    @OnMessage
-        public void send (UserGameCommand command)
-        {
-            try {
 
-                this.session.getBasicRemote().sendText(new Gson().toJson(command));
-            } catch (IOException e) {
-                throw new ResponseException(500,e.getMessage());
-            }
+    public void echo (String message)
+    {
+        System.out.println(message);
+        UserGameCommand command = new Gson().fromJson(message,UserGameCommand.class);
+        send(command);
+    }
+
+    public void send (UserGameCommand command)
+    {
+        try {
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException e) {
+            throw new ResponseException(500,e.getMessage());
         }
+    }
         @OnOpen
         public void onOpen(Session session, EndpointConfig endpointConfig)
         {
