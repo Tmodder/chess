@@ -95,7 +95,6 @@ public class ServerFacade
         //joinGame with given color using id
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
 
-
     }
 
     public void observeGame(int gameNumber)

@@ -1,11 +1,10 @@
 package server;
 import dataaccess.*;
 import handler.*;
+import server.websocket.WebSocketHandler;
 import spark.Spark;
-import org.eclipse.jetty.websocket.api.annotations.*;
-import org.eclipse.jetty.websocket.api.*;
 
-@WebSocket
+
 public class Server {
 
     public int run(int desiredPort) {
@@ -20,7 +19,7 @@ public class Server {
         var userHandler = new UserHandler(userDb, authDb);
         var clearHandler = new ClearHandler(userDb,authDb,gameDb);
         var gameHandler = new GameHandler(authDb,gameDb);
-        Spark.webSocket("/ws",Server.class);
+        Spark.webSocket("/ws", WebSocketHandler.class);
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
         Spark.post("/game", gameHandler::createGame);
@@ -33,18 +32,7 @@ public class Server {
         return Spark.port();
     }
 
-    @OnWebSocketMessage
-    public void onMessage(Session session, String message)
-    {
-        try
-        {
-            System.out.printf("Received: %s", message);
-            session.getRemote().sendString(message);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
-    }
 
     public void stop() {
         Spark.stop();
