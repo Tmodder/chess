@@ -15,14 +15,18 @@ public class ChessBoardUI
         BLACK,
         WHITE
     }
-
     public void drawBoard(boolean whitePerspective)
+    {
+        var board = new ChessBoard();
+        board.resetBoard();
+        drawBoard(whitePerspective,board);
+    }
+    public void drawBoard(boolean whitePerspective, ChessBoard gameBoard)
     {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(EscapeSequences.ERASE_SCREEN);
         out.print(EscapeSequences.SET_TEXT_BOLD);
-        ChessBoard gameBoard = new ChessBoard();
-        gameBoard.resetBoard();
+
 
         //Split string board representation into arrays
         String board = gameBoard.toString();

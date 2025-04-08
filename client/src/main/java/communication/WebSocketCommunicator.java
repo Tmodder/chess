@@ -49,4 +49,5 @@ public class WebSocketCommunicator extends Endpoint
             System.out.print("Websocket open");
             send(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId));
         }
+
 }

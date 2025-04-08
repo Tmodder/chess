@@ -108,7 +108,8 @@ public class WebSocketHandler
             chessGame.makeMove(cmd.getMove());
             saveGame(gameData,chessGame);
             return new LoadGameMessage(chessGame);
-        } catch (DataAccessException | InvalidMoveException e) {
+        }
+        catch (DataAccessException | InvalidMoveException e) {
             throw new RuntimeException(e);
         }
     }
