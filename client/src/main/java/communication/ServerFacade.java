@@ -1,6 +1,10 @@
 package communication;
 
+import chess.ChessMove;
+import chess.ChessPosition;
 import requestandresult.*;
+import websocket.commands.MoveGameCommand;
+import websocket.commands.UserGameCommand;
 
 import java.util.ArrayList;
 
@@ -94,6 +98,11 @@ public class ServerFacade
 
         //joinGame with given color using id
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
+        WebSocketCommunicator comm = new WebSocketCommunicator(color);
+        var pos1 = new ChessPosition(2,1);
+        var pos2 = new ChessPosition(3,1);
+        var testMove = new ChessMove(pos1,pos2,null);
+        comm.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
 
     }
 

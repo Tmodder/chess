@@ -2,8 +2,10 @@ package communication;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Scanner;
 import com.google.gson.Gson;
+import ui.ChessBoardUI;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -15,9 +17,11 @@ public class WebSocketCommunicator extends Endpoint
 {
     private String authToken;
     private int gameId;
+    private String teamColor;
     public Session session;
-    public WebSocketCommunicator() throws ResponseException {
+    public WebSocketCommunicator(String color) throws ResponseException {
         try {
+            this.teamColor = color;
             URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
@@ -69,9 +73,11 @@ public class WebSocketCommunicator extends Endpoint
             send(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId));
         }
 
-        public void loadGame(LoadGameMessage msg)
+        private void loadGame(LoadGameMessage msg)
         {
             var chessGame = msg.getGame();
+            new ChessBoardUI().drawBoard(Objects.equals(teamColor,"white"),chessGame.getBoard());
+
 
         }
 
