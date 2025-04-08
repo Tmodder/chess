@@ -109,4 +109,21 @@ public class ServerFacade
         communicator.makeRequest("DELETE","/db",null,null,null);
     }
 
+    public void makeMove()
+    {
+
+    }
+
+
+    public void resign()
+    {
+
+    }
+
+    public void leave()
+    {
+
+    }
+
+
 }

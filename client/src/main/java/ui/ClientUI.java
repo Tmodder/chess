@@ -227,14 +227,47 @@ public class ClientUI
         String out = facade.listGames();
         System.out.print(out);
     }
-    private void playGame(String gameNumber, String color)
-    {
+
+    private void playGame(String gameNumber, String color) {
         color = color.toUpperCase();
-        facade.playGame(Integer.parseInt(gameNumber),color);
-        System.out.print("playing game " + gameNumber +" as ");
+        facade.playGame(Integer.parseInt(gameNumber), color);
+        System.out.print("playing game " + gameNumber + " as ");
         System.out.println(color);
         boardUI.drawBoard(Objects.equals(color, "WHITE"));
+        while (true) {
+            System.out.print("[LOGGED_IN] >>>");
+            var scanner = new Scanner(System.in);
+            String command = scanner.nextLine();
+            String[] args = command.split(" ");
+            try {
+                switch (args[0]) {
+                    case "help":
+                        assert args.length == 1;
+                        //playGameHelp();
+                        break;
+                    case "leave":
+                        assert args.length == 1;
+                        //leave();
+                        return;
+                    case "resign":
+                        assert args.length == 1;
+                        //resign();
+                        break;
+                    case "highlight":
+                        if (args.length != 2) {
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
+                        }
+                        //highlightMoves(args[1]);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Command not found");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
+
     private void observeGame(String gameNumber)
     {
         facade.observeGame(Integer.parseInt(gameNumber));

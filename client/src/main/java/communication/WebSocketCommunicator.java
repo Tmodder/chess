@@ -5,6 +5,10 @@ import java.net.URI;
 import java.util.Scanner;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 @ClientEndpoint
 public class WebSocketCommunicator extends Endpoint
@@ -21,7 +25,22 @@ public class WebSocketCommunicator extends Endpoint
                 @Override
                 public void onMessage(String message)
                 {
-                    echo(message);
+                    var cmd = new Gson().fromJson(message, ServerMessage.class);
+                    switch(cmd.getServerMessageType())
+                    {
+                        case LOAD_GAME:
+                            var loadCmd = new Gson().fromJson(message, LoadGameMessage.class);
+                            loadGame(loadCmd);
+                            break;
+                        case NOTIFICATION:
+                            var notifCmd = new Gson().fromJson(message, NotificationMessage.class);
+                            break;
+                        case ERROR:
+                            var errorCmd = new Gson().fromJson(message, ErrorMessage.class);
+                            break;
+
+
+                    }
                 }
             });
         } catch (Exception e) {
@@ -48,6 +67,12 @@ public class WebSocketCommunicator extends Endpoint
         {
             System.out.print("Websocket open");
             send(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId));
+        }
+
+        public void loadGame(LoadGameMessage msg)
+        {
+            var chessGame = msg.getGame();
+
         }
 
 }
