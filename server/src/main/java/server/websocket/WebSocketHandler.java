@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
 import service.GameService;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 
@@ -35,6 +36,7 @@ public class WebSocketHandler
 
             var serverMessage = switch (command.getCommandType()) {
                 case CONNECT -> connect(command);
+                case LEAVE -> leave(command);
                 default -> null;
             };
             session.getRemote().sendString(new Gson().toJson(serverMessage));
@@ -56,8 +58,31 @@ public class WebSocketHandler
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public ServerMessage leave(UserGameCommand cmd)
+    {
+        try
+        {
+            var auth = authDAO.findAuth(cmd.getAuthToken());
+            // create a server message Load Game new ServerMessage()
 
+            return new NotificationMessage(auth.username() + "left the game");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public ServerMessage makeMove(UserGameCommand cmd)
+    {
+        try
+        {
+            var auth = authDAO.findAuth(cmd.getAuthToken());
+            // create a server message Load Game new ServerMessage()
+
+            return new NotificationMessage(auth.username() + "left the game");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
