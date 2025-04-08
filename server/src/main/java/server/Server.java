@@ -19,7 +19,8 @@ public class Server {
         var userHandler = new UserHandler(userDb, authDb);
         var clearHandler = new ClearHandler(userDb,authDb,gameDb);
         var gameHandler = new GameHandler(authDb,gameDb);
-        Spark.webSocket("/ws", WebSocketHandler.class);
+        var webSocketHandler = new WebSocketHandler(authDb,gameDb);
+        Spark.webSocket("/ws", webSocketHandler);
         Spark.post("/user", userHandler::register);
         Spark.post("/session", userHandler::login);
         Spark.post("/game", gameHandler::createGame);
