@@ -11,6 +11,7 @@ import java.util.ArrayList;
  * signature of the existing methods.
  */
 public class ChessGame {
+    private boolean gameOver = false;
     private ChessBoard board = new ChessBoard();
     private TeamColor turnColor;
     private HashSet<ChessPosition> blackPositions;
@@ -221,4 +222,8 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return this.board;
     }
+
+    public void endGame() { gameOver = true;}
+
+    public boolean getGameStatus() {return gameOver;}
 }

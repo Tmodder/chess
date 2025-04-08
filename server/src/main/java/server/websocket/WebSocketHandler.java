@@ -1,5 +1,7 @@
 package server.websocket;
 
+import chess.ChessGame;
+import chess.InvalidMoveException;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
@@ -8,6 +10,7 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.google.gson.Gson;
+import websocket.commands.MoveGameCommand;
 import websocket.commands.UserGameCommand;
 import service.GameService;
 import websocket.messages.LoadGameMessage;
@@ -33,10 +36,15 @@ public class WebSocketHandler
         {
             System.out.printf("Received: %s", message);
             var command = new Gson().fromJson(message, UserGameCommand.class);
+            if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE)
+            {
+                command = new Gson().fromJson(message, MoveGameCommand.class);
+            }
 
             var serverMessage = switch (command.getCommandType()) {
                 case CONNECT -> connect(command);
                 case LEAVE -> leave(command);
+                case MAKE_MOVE -> makeMove((MoveGameCommand) command);
                 default -> null;
             };
             session.getRemote().sendString(new Gson().toJson(serverMessage));
@@ -73,15 +81,17 @@ public class WebSocketHandler
         }
     }
 
-    public ServerMessage makeMove(UserGameCommand cmd)
+    public ServerMessage makeMove(MoveGameCommand cmd)
     {
         try
         {
             var auth = authDAO.findAuth(cmd.getAuthToken());
             // create a server message Load Game new ServerMessage()
-
-            return new NotificationMessage(auth.username() + "left the game");
-        } catch (DataAccessException e) {
+            var gameData = gameDAO.getGame(cmd.getGameID());
+            var chessGame = gameData.game();
+            chessGame.makeMove(cmd.getMove());
+            return new LoadGameMessage(chessGame);
+        } catch (DataAccessException | InvalidMoveException e) {
             throw new RuntimeException(e);
         }
     }
