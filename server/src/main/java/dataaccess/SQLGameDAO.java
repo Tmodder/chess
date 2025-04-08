@@ -24,6 +24,27 @@ public class SQLGameDAO implements GameDAO
     }
 
     @Override
+    public void updateGame(Game game) throws DataAccessException
+    {
+        DatabaseManager.createTables();
+        String gameJson = serializeGame(game.game());
+        String updateGameDataStatement = "UPDATE game_data SET game_json = ? WHERE game_id = ?";
+        try(var conn = DatabaseManager.getConnection())
+        {
+            try(var stmt = conn.prepareStatement(updateGameDataStatement))
+            {
+                stmt.setString(1,gameJson);
+                stmt.setInt(2,game.gameID());
+                stmt.executeUpdate();
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
     public void clear() throws DataAccessException{
         try(var conn = DatabaseManager.getConnection())
         {

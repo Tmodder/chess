@@ -93,6 +93,10 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
             ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+            if (gameOver)
+            {
+                throw new InvalidMoveException("Can't move Game over!");
+            }
             if (movingPiece == null)
             {
                 throw new InvalidMoveException("Move not valid");

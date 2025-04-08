@@ -27,6 +27,11 @@ public class MemoryGameDAO implements GameDAO {
         return new ArrayList<>(database.values());
     }
 
+    @Override
+    public void updateGame(Game newGame) throws DataAccessException {
+
+    }
+
     //U
     public void addPlayerToGame(String color, String username, Game game) throws DataAccessException
     {

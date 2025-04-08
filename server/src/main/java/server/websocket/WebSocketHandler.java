@@ -43,6 +43,7 @@ public class WebSocketHandler
 
             var serverMessage = switch (command.getCommandType()) {
                 case CONNECT -> connect(command);
+                case RESIGN -> resign(command);
                 case LEAVE -> leave(command);
                 case MAKE_MOVE -> makeMove((MoveGameCommand) command);
                 default -> null;
@@ -52,6 +53,22 @@ public class WebSocketHandler
             throw new RuntimeException(e);
         }
 
+    }
+
+    public ServerMessage resign(UserGameCommand cmd)
+    {
+        try
+        {
+            var auth = authDAO.findAuth(cmd.getAuthToken());
+            // create a server message Load Game new ServerMessage()
+            var gameData = gameDAO.getGame(cmd.getGameID());
+            var game = gameData.game();
+            game.endGame();
+            saveGame(gameData,game);
+            return new NotificationMessage(auth.username() + "resigned the game");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ServerMessage connect(UserGameCommand cmd)
@@ -74,7 +91,6 @@ public class WebSocketHandler
         {
             var auth = authDAO.findAuth(cmd.getAuthToken());
             // create a server message Load Game new ServerMessage()
-
             return new NotificationMessage(auth.username() + "left the game");
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
@@ -90,9 +106,25 @@ public class WebSocketHandler
             var gameData = gameDAO.getGame(cmd.getGameID());
             var chessGame = gameData.game();
             chessGame.makeMove(cmd.getMove());
+            saveGame(gameData,chessGame);
             return new LoadGameMessage(chessGame);
         } catch (DataAccessException | InvalidMoveException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private void saveGame(Game oldGame, ChessGame newGame)
+    {
+        try
+        {
+            var gameData = new Game(oldGame.gameID(),oldGame.whiteUsername(),oldGame.blackUsername(),oldGame.gameName(),newGame);
+            gameDAO.updateGame(gameData);
+        }
+        catch (DataAccessException e)
+
+        {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 }
