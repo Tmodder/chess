@@ -118,7 +118,7 @@ public class ServerFacade
         communicator.makeRequest("DELETE","/db",null,null,null);
     }
 
-    public void makeMove()
+    public void makeMove(ChessMove move)
     {
 
     }

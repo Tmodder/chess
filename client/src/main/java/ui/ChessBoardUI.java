@@ -45,7 +45,7 @@ public class ChessBoardUI
             isReversed = true;
         }
         String [] rows = board.split("\n");
-
+        out.println();
         drawHeader(columnList, out);
         for(int i = 0; i < 8; i++)
         {

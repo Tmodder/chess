@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessMove;
+import chess.ChessPosition;
 import communication.ResponseException;
 import communication.ServerFacade;
 
@@ -233,9 +235,9 @@ public class ClientUI
         facade.playGame(Integer.parseInt(gameNumber), color);
         System.out.print("playing game " + gameNumber + " as ");
         System.out.println(color);
-        boardUI.drawBoard(Objects.equals(color, "WHITE"));
+        //boardUI.drawBoard(Objects.equals(color, "WHITE"));
         while (true) {
-            System.out.print("[LOGGED_IN] >>>");
+            System.out.print("[IN_GAME] >>>");
             var scanner = new Scanner(System.in);
             String command = scanner.nextLine();
             String[] args = command.split(" ");
@@ -244,6 +246,13 @@ public class ClientUI
                     case "help":
                         assert args.length == 1;
                         //playGameHelp();
+
+                        break;
+                    case "move":
+                        if (args.length != 3) {
+                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
+                        }
+                        //move(args[0],args[1],args[2])
                         break;
                     case "leave":
                         assert args.length == 1;
@@ -262,8 +271,10 @@ public class ClientUI
                     default:
                         throw new IllegalArgumentException("Command not found");
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            }   catch (IllegalArgumentException e)
+            {
+                System.out.println(e.getMessage());
+                System.out.println("Stop, get some help");
             }
         }
     }
@@ -273,6 +284,37 @@ public class ClientUI
         facade.observeGame(Integer.parseInt(gameNumber));
         System.out.println("observing game " + gameNumber);
         boardUI.drawBoard(true);
+    }
+
+    private void move(String posOne, String posTwo, String promoPiece)
+    {
+        //TODO add promo piece
+        facade.makeMove(new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),null));
+    }
+
+    private ChessPosition convertNotationToPos(String stringPos) throws IllegalArgumentException
+    {
+        var chars = stringPos.toCharArray();
+        int row;
+        int col;
+        if (Character.isAlphabetic(chars[0]) && (chars[0] <= 'h' && chars[0] >= 'a'))
+        {
+            col = Character.getNumericValue(chars[0]) - 9;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Chess notation not recognized!");
+        }
+        int digit = Character.getNumericValue(chars[1]);
+        if (Character.isDigit(chars[1]) && (chars[1] <= 8 && chars[1] >= 1))
+        {
+            row = digit;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Chess notation not recognized!");
+        }
+        return new ChessPosition(row,col);
     }
 
 
