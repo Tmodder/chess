@@ -1,14 +1,15 @@
 package ui;
 
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 import communication.ServerFacade;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class playGameRepl
 {
+    private ChessBoard board = null;
+    private final ChessBoardUI boardUI = new ChessBoardUI();
     ServerFacade facade;
     String playerColor;
     int currGameNumber;
@@ -17,12 +18,16 @@ public class playGameRepl
         this.facade = facade;
     }
 
-    public void run(int currGameNumber,String color)
+    public void run(int currGameNumber,String color,String playerName)
     {
         color = color.toUpperCase();
         playerColor = color;
         this.currGameNumber = currGameNumber;
-        facade.playGame(currGameNumber, color);
+        if(!facade.tryHotJoin(currGameNumber,color,playerName))
+        {
+            facade.playGame(currGameNumber, color);
+        }
+
         System.out.print("playing game " + currGameNumber + " as ");
         System.out.println(color);
         //boardUI.drawBoard(Objects.equals(color, "WHITE"));
@@ -39,7 +44,6 @@ public class playGameRepl
                     case "redraw":
                         assert args.length == 1;
                         redraw();
-
                         break;
                     case "move":
                         if (args.length != 4) {
@@ -89,12 +93,27 @@ public class playGameRepl
 
     private void redraw()
     {
+        if (board == null) throw new RuntimeException();
+        boardUI.drawBoard(Objects.equals(this.playerColor,"WHITE"),board);
+
     }
 
     private void move(String posOne, String posTwo, String promoPiece) throws IllegalArgumentException
     {
         var piece = convertStringToPiece(promoPiece);
-        facade.makeMove(currGameNumber, new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),piece));
+        var pieceColor = board.getPiece(convertNotationToPos(posOne)).getTeamColor();
+        if (pieceColor == ChessGame.TeamColor.WHITE && Objects.equals(playerColor, "WHITE")
+                || pieceColor ==ChessGame.TeamColor.BLACK && Objects.equals(playerColor, "BLACK"))
+        {
+            facade.makeMove(currGameNumber, new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),piece));
+        }
+        else
+        {
+            throw new IllegalArgumentException("You can't move the other player's pieces!");
+        }
+
+
+
     }
 
     private ChessPiece.PieceType convertStringToPiece(String pieceString) throws IllegalArgumentException
@@ -137,8 +156,9 @@ public class playGameRepl
         return new ChessPosition(row,col);
     }
 
-    public String getColor()
+    public void receiveBoard(ChessBoard board)
     {
-        return playerColor;
+        this.board = board;
+        boardUI.drawBoard(Objects.equals(this.playerColor,"WHITE"),board);
     }
 }

@@ -122,13 +122,13 @@ public class ClientUI implements ServerMessageObserver
     {
         facade.login(username, password);
         System.out.println("Ok buddy your logged in");
-        playerName = password;
+        playerName = username;
     }
     private void register(String username, String password, String email)
     {
         facade.register(username, password, email);
         System.out.println("Ok bro you registered");
-        playerName = password;
+        playerName = username;
     }
     private void runPostLogin()
     {
@@ -164,7 +164,7 @@ public class ClientUI implements ServerMessageObserver
                         {
                             throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
-                        gameLoop.run(Integer.parseInt(args[1]),args[2]);
+                        gameLoop.run(Integer.parseInt(args[1]),args[2],playerName);
                         break;
                     case "observe":
                         if(args.length != 2)
@@ -255,7 +255,7 @@ public class ClientUI implements ServerMessageObserver
         {
             case LOAD_GAME:
                 var loadMsg = (LoadGameMessage) notificationMessage;
-                boardUI.drawBoard(Objects.equals(gameLoop.getColor(),"WHITE"),loadMsg.getGame().getBoard());
+                gameLoop.receiveBoard(loadMsg.getGame().getBoard());
                 break;
             case NOTIFICATION:
                 var notifyMsg = (NotificationMessage) notificationMessage;

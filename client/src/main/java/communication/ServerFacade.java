@@ -8,13 +8,16 @@ import websocket.commands.MoveGameCommand;
 import websocket.commands.UserGameCommand;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ServerFacade
 {
     private final ArrayList<Integer> gameIdList = new ArrayList<>();
     private final  ClientCommunicator communicator;
+    private ListGamesResult listRes = null;
     private final WebSocketCommunicator socket;
     private String authToken;
+    private String username;
 
     public ServerFacade(int port, ServerMessageObserver msgObserver) {
         String url = "http://localhost:" + String.valueOf(port);
@@ -53,6 +56,7 @@ public class ServerFacade
         gameIdList.clear();
         var stringOut = new StringBuilder();
         var res = communicator.makeRequest("GET","/game", new ListGamesRequest(authToken), ListGamesResult.class, authToken);
+        listRes = res;
         if (res.games().isEmpty())
         {
             return null;
@@ -92,6 +96,20 @@ public class ServerFacade
         return stringOut.toString();
     }
 
+    public boolean tryHotJoin(int gameNumber, String color, String username)
+    {
+        int index = gameNumber -1;
+        int gameId = gameIdList.get(index);
+        var curGame = listRes.games().get(index);
+        if (Objects.equals(curGame.whiteUsername(), username) && Objects.equals(color, "WHITE")
+                || Objects.equals(curGame.blackUsername(), username) && Objects.equals(color, "BLACK"))
+        {
+            socket.send(new UserGameCommand(UserGameCommand.CommandType.CONNECT,authToken,gameId));
+            return true;
+        }
+        return false;
+    }
+
 
     public void playGame(int gameNumber,String color)
     {
@@ -101,19 +119,13 @@ public class ServerFacade
 
         //joinGame with given color using id
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
-
-//        var pos1 = new ChessPosition(2,1);
-//        var pos2 = new ChessPosition(3,1);
-//        var testMove = new ChessMove(pos1,pos2,null);
-//        socket.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
         socket.send(new UserGameCommand(UserGameCommand.CommandType.CONNECT,authToken,gameId));
 
     }
 
     public void observeGame(int gameNumber)
     {
-        int index = gameNumber -1;
-        int gameId = gameIdList.get(index);
+        int gameId = gameIdList.get(gameNumber -1);
         //finish implementation in phase 6
     }
 
@@ -124,11 +136,9 @@ public class ServerFacade
 
     public void makeMove(int gameNumber,ChessMove move)
     {
-        int index = gameNumber - 1;
-        int gameId = gameIdList.get(index);
+        int gameId = gameIdList.get(gameNumber - 1);
         socket.send(new MoveGameCommand(authToken,gameId,move));
     }
-
 
     public void resign()
     {
