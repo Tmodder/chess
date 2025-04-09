@@ -180,7 +180,7 @@ public class SQLGameDAO implements GameDAO
     private String serializeGame(ChessGame game)
     {
         var g = new Gson();
-        return g.toJson(new ChessGame());
+        return g.toJson(game);
 
     }
 

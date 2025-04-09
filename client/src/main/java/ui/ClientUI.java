@@ -258,6 +258,10 @@ public class ClientUI implements ServerMessageObserver
                         assert args.length == 1;
                         //playGameHelp();
 
+                    case "redraw":
+                        assert args.length == 1;
+                        //redraw();
+
                         break;
                     case "move":
                         if (args.length != 4) {
@@ -342,7 +346,6 @@ public class ClientUI implements ServerMessageObserver
         }
         return new ChessPosition(row,col);
     }
-
 
     @Override
     public void notify(ServerMessage notificationMessage) {
