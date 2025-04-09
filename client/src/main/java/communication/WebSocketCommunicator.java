@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import com.google.gson.Gson;
 import ui.ChessBoardUI;
+import ui.ServerMessageObserver;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -15,11 +16,13 @@ import websocket.messages.ServerMessage;
 @ClientEndpoint
 public class WebSocketCommunicator extends Endpoint
 {
+    private ServerMessageObserver msgObserver;
     private String authToken;
     private int gameId;
     public Session session;
-    public WebSocketCommunicator() throws ResponseException {
+    public WebSocketCommunicator(ServerMessageObserver msgObserver) throws ResponseException {
         try {
+            this.msgObserver = msgObserver;
             URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
@@ -32,16 +35,16 @@ public class WebSocketCommunicator extends Endpoint
                     {
                         case LOAD_GAME:
                             var loadCmd = new Gson().fromJson(message, LoadGameMessage.class);
-                            loadGame(loadCmd);
+                            msgObserver.notify(loadCmd);
                             break;
                         case NOTIFICATION:
                             var notifCmd = new Gson().fromJson(message, NotificationMessage.class);
+                            msgObserver.notify(notifCmd);
                             break;
                         case ERROR:
                             var errorCmd = new Gson().fromJson(message, ErrorMessage.class);
+                            msgObserver.notify(errorCmd);
                             break;
-
-
                     }
                 }
             });

@@ -1,19 +1,26 @@
 package ui;
 
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import communication.ResponseException;
 import communication.ServerFacade;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
-import java.io.IOException;
-import java.io.StringReader;
+
 import java.util.Objects;
 import java.util.Scanner;
 
-public class ClientUI
+public class ClientUI implements ServerMessageObserver
 {
     private final ChessBoardUI boardUI = new ChessBoardUI();
-    private final ServerFacade facade = new ServerFacade(8080);
+    private final ServerFacade facade = new ServerFacade(8080,this);
+    private String playerColor;
+    private String playerName;
+    private Integer currGameNumber;
     public void runMenu()
     {
         System.out.println("♕ Lets play some freakin chess.");
@@ -114,11 +121,13 @@ public class ClientUI
     {
         facade.login(username, password);
         System.out.println("Ok buddy your logged in");
+        playerName = password;
     }
     private void register(String username, String password, String email)
     {
         facade.register(username, password, email);
         System.out.println("Ok bro you registered");
+        playerName = password;
     }
     private void runPostLogin()
     {
@@ -232,7 +241,9 @@ public class ClientUI
 
     private void playGame(String gameNumber, String color) {
         color = color.toUpperCase();
-        facade.playGame(Integer.parseInt(gameNumber), color);
+        playerColor = color;
+        currGameNumber = Integer.parseInt(gameNumber);
+        facade.playGame(currGameNumber, color);
         System.out.print("playing game " + gameNumber + " as ");
         System.out.println(color);
         //boardUI.drawBoard(Objects.equals(color, "WHITE"));
@@ -252,7 +263,7 @@ public class ClientUI
                         if (args.length != 3) {
                             throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
-                        //move(args[0],args[1],args[2])
+                        move(args[0],args[1],args[2]);
                         break;
                     case "leave":
                         assert args.length == 1;
@@ -286,10 +297,25 @@ public class ClientUI
         boardUI.drawBoard(true);
     }
 
-    private void move(String posOne, String posTwo, String promoPiece)
+    private void move(String posOne, String posTwo, String promoPiece) throws IllegalArgumentException
     {
-        //TODO add promo piece
-        facade.makeMove(new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),null));
+        var piece = convertStringToPiece(promoPiece);
+        facade.makeMove(currGameNumber, new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),piece));
+    }
+
+    private ChessPiece.PieceType convertStringToPiece(String pieceString) throws IllegalArgumentException
+    {
+        return switch (pieceString.toLowerCase())
+        {
+            case "king" -> ChessPiece.PieceType.KING;
+            case "queen" -> ChessPiece.PieceType.QUEEN;
+            case "rook" -> ChessPiece.PieceType.ROOK;
+            case "knight" -> ChessPiece.PieceType.KNIGHT;
+            case "bishop" -> ChessPiece.PieceType.BISHOP;
+            case "pawn" -> ChessPiece.PieceType.PAWN;
+            case "none" -> null;
+            default -> throw new IllegalArgumentException("Piece not recognized");
+        };
     }
 
     private ChessPosition convertNotationToPos(String stringPos) throws IllegalArgumentException
@@ -318,5 +344,23 @@ public class ClientUI
     }
 
 
+    @Override
+    public void notify(ServerMessage notificationMessage) {
+        switch (notificationMessage.getServerMessageType())
+        {
+            case LOAD_GAME:
+                var loadMsg = (LoadGameMessage) notificationMessage;
+                boardUI.drawBoard(Objects.equals(playerColor,"WHITE"),loadMsg.getGame().getBoard());
+                break;
+            case NOTIFICATION:
+                var notifyMsg = (NotificationMessage) notificationMessage;
+                break;
+            case ERROR:
+                var errMsg = (ErrorMessage) notificationMessage;
+                break;
+        }
 
+        System.out.println();
+
+    }
 }

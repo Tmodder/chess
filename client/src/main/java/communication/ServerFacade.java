@@ -3,6 +3,7 @@ package communication;
 import chess.ChessMove;
 import chess.ChessPosition;
 import requestandresult.*;
+import ui.ServerMessageObserver;
 import websocket.commands.MoveGameCommand;
 import websocket.commands.UserGameCommand;
 
@@ -12,12 +13,13 @@ public class ServerFacade
 {
     private final ArrayList<Integer> gameIdList = new ArrayList<>();
     private final  ClientCommunicator communicator;
-    private final WebSocketCommunicator socket = new WebSocketCommunicator();
+    private final WebSocketCommunicator socket;
     private String authToken;
 
-    public ServerFacade(int port) {
+    public ServerFacade(int port, ServerMessageObserver msgObserver) {
         String url = "http://localhost:" + String.valueOf(port);
         communicator = new ClientCommunicator(url);
+        socket =  new WebSocketCommunicator(msgObserver);
     }
 
     public void login(String username, String password)
@@ -100,10 +102,10 @@ public class ServerFacade
         //joinGame with given color using id
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
 
-        var pos1 = new ChessPosition(2,1);
-        var pos2 = new ChessPosition(3,1);
-        var testMove = new ChessMove(pos1,pos2,null);
-        socket.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
+//        var pos1 = new ChessPosition(2,1);
+//        var pos2 = new ChessPosition(3,1);
+//        var testMove = new ChessMove(pos1,pos2,null);
+//        socket.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
 
     }
 
@@ -119,9 +121,11 @@ public class ServerFacade
         communicator.makeRequest("DELETE","/db",null,null,null);
     }
 
-    public void makeMove(ChessMove move)
+    public void makeMove(int gameNumber,ChessMove move)
     {
-
+        int index = gameNumber - 1;
+        int gameId = gameIdList.get(index);
+        socket.send(new MoveGameCommand(authToken,gameId,move));
     }
 
 
