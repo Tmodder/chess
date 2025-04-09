@@ -256,11 +256,10 @@ public class ClientUI implements ServerMessageObserver
                 switch (args[0]) {
                     case "help":
                         assert args.length == 1;
-                        //playGameHelp();
-
+                        playGameHelp();
                     case "redraw":
                         assert args.length == 1;
-                        //redraw();
+                        redraw();
 
                         break;
                     case "move":
@@ -292,6 +291,26 @@ public class ClientUI implements ServerMessageObserver
                 System.out.println("Stop, get some help");
             }
         }
+    }
+
+    private void playGameHelp()
+    {
+        System.out.println("Options: ");
+        System.out.println("redraw");
+        System.out.println("     Redraw the chess board");
+        System.out.println("move <POSITION_ONE> <POSITION_TWO> <PROMOTION_PIECE>");
+        System.out.println("     Using chess notation, type where the piece starts from and where it ends");
+        System.out.println("If applicable type what piece you want to promote to");
+        System.out.println("highlight <PIECE_POSITION");
+        System.out.println("     type the location of a piece to see its valid moves highlighted");
+        System.out.println("leave");
+        System.out.println("     Exit the game and return to login menu(without ending the game)");
+        System.out.println("resign");
+        System.out.println("    Forfeit the game");
+    }
+
+    private void redraw()
+    {
     }
 
     private void observeGame(String gameNumber)
