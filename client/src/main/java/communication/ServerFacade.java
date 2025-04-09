@@ -106,6 +106,7 @@ public class ServerFacade
 //        var pos2 = new ChessPosition(3,1);
 //        var testMove = new ChessMove(pos1,pos2,null);
 //        socket.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
+        socket.send(new UserGameCommand(UserGameCommand.CommandType.CONNECT,authToken,gameId));
 
     }
 

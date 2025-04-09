@@ -260,10 +260,10 @@ public class ClientUI implements ServerMessageObserver
 
                         break;
                     case "move":
-                        if (args.length != 3) {
+                        if (args.length != 4) {
                             throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
-                        move(args[0],args[1],args[2]);
+                        move(args[1],args[2],args[3]);
                         break;
                     case "leave":
                         assert args.length == 1;
@@ -332,7 +332,7 @@ public class ClientUI implements ServerMessageObserver
             throw new IllegalArgumentException("Chess notation not recognized!");
         }
         int digit = Character.getNumericValue(chars[1]);
-        if (Character.isDigit(chars[1]) && (chars[1] <= 8 && chars[1] >= 1))
+        if (Character.isDigit(chars[1]) && (digit <= 8 && digit >= 1))
         {
             row = digit;
         }

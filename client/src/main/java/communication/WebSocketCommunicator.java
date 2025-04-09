@@ -17,8 +17,6 @@ import websocket.messages.ServerMessage;
 public class WebSocketCommunicator extends Endpoint
 {
     private ServerMessageObserver msgObserver;
-    private String authToken;
-    private int gameId;
     public Session session;
     public WebSocketCommunicator(ServerMessageObserver msgObserver) throws ResponseException {
         try {
@@ -70,8 +68,7 @@ public class WebSocketCommunicator extends Endpoint
     }
         public void onOpen(Session session, EndpointConfig endpointConfig)
         {
-            System.out.print("Websocket open");
-            send(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameId));
+
         }
 
         private void loadGame(LoadGameMessage msg)
