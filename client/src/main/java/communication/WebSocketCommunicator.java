@@ -17,11 +17,9 @@ public class WebSocketCommunicator extends Endpoint
 {
     private String authToken;
     private int gameId;
-    private String teamColor;
     public Session session;
-    public WebSocketCommunicator(String color) throws ResponseException {
+    public WebSocketCommunicator() throws ResponseException {
         try {
-            this.teamColor = color;
             URI uri = new URI("ws://localhost:8080/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
@@ -76,7 +74,7 @@ public class WebSocketCommunicator extends Endpoint
         private void loadGame(LoadGameMessage msg)
         {
             var chessGame = msg.getGame();
-            new ChessBoardUI().drawBoard(Objects.equals(teamColor,"white"),chessGame.getBoard());
+            new ChessBoardUI().drawBoard(true,chessGame.getBoard());
 
 
         }

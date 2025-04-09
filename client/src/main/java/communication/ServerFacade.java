@@ -12,6 +12,7 @@ public class ServerFacade
 {
     private final ArrayList<Integer> gameIdList = new ArrayList<>();
     private final  ClientCommunicator communicator;
+    private final WebSocketCommunicator socket = new WebSocketCommunicator();
     private String authToken;
 
     public ServerFacade(int port) {
@@ -98,11 +99,11 @@ public class ServerFacade
 
         //joinGame with given color using id
         communicator.makeRequest("PUT","/game",new JoinGameRequest(authToken,color,gameId),null,authToken);
-        WebSocketCommunicator comm = new WebSocketCommunicator(color);
+
         var pos1 = new ChessPosition(2,1);
         var pos2 = new ChessPosition(3,1);
         var testMove = new ChessMove(pos1,pos2,null);
-        comm.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
+        socket.send(new MoveGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameId, testMove));
 
     }
 
