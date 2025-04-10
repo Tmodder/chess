@@ -42,10 +42,16 @@ public class playGameRepl extends observeGameRepl
                         redraw();
                         break;
                     case "move":
-                        if (args.length != 4) {
+                        if (args.length < 3 || args.length > 5) {
                             throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
-                        move(args[1],args[2],args[3]);
+                        if (args.length == 3)
+                        {
+                            move(args[1],args[2]);
+                        }
+                        else {
+                            move(args[1],args[2],args[3]);
+                        }
                         break;
                     case "leave":
                         assert args.length == 1;
@@ -53,7 +59,7 @@ public class playGameRepl extends observeGameRepl
                         return;
                     case "resign":
                         assert args.length == 1;
-                        //resign();
+                        resign();
                         break;
                     case "highlight":
                         if (args.length != 2) {
@@ -88,6 +94,10 @@ public class playGameRepl extends observeGameRepl
         System.out.println("    Forfeit the game");
     }
 
+    private void move(String posOne, String posTwo)
+    {
+        move(posOne, posTwo, "none");
+    }
 
     private void move(String posOne, String posTwo, String promoPiece) throws IllegalArgumentException
     {
@@ -105,6 +115,11 @@ public class playGameRepl extends observeGameRepl
     }
 
 
+    private void resign()
+    {
+        facade.resign(currGameNumber);
+    }
+
     private ChessPiece.PieceType convertStringToPiece(String pieceString) throws IllegalArgumentException
     {
         return switch (pieceString.toLowerCase())
@@ -118,6 +133,13 @@ public class playGameRepl extends observeGameRepl
             case "none" -> null;
             default -> throw new IllegalArgumentException("Piece not recognized");
         };
+    }
+
+    @Override
+    protected void highlightMoves(String stringPos)
+    {
+        var position = convertNotationToPos(stringPos);
+        boardUI.drawBoardWithHighlights(Objects.equals(playerColor,"WHITE"),board,position);
     }
 
     @Override

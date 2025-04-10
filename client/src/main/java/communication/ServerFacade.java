@@ -140,9 +140,10 @@ public class ServerFacade
         socket.send(new MoveGameCommand(authToken,gameId,move));
     }
 
-    public void resign()
+    public void resign(int gameNumber)
     {
-
+        int gameId = gameIdList.get(gameNumber - 1);
+        socket.send(new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameId));
     }
 
     public void leave(int gameNumber)
