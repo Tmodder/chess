@@ -51,13 +51,6 @@ public class WebSocketCommunicator extends Endpoint
         }
     }
 
-    public void echo (String message)
-    {
-        System.out.println("\n" + message);
-        UserGameCommand command = new Gson().fromJson(message,UserGameCommand.class);
-        send(command);
-    }
-
     public void send (UserGameCommand command)
     {
         try {
@@ -68,14 +61,6 @@ public class WebSocketCommunicator extends Endpoint
     }
         public void onOpen(Session session, EndpointConfig endpointConfig)
         {
-
-        }
-
-        private void loadGame(LoadGameMessage msg)
-        {
-            var chessGame = msg.getGame();
-            new ChessBoardUI().drawBoard(true,chessGame.getBoard());
-
 
         }
 

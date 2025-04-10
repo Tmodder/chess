@@ -121,7 +121,8 @@ public class WebSocketHandler
             {
                 userType = "black";
             }
-            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" as "+ userType + " to the game!"), gameData.gameID());
+            String welcomeString = "Everyone welcome " + username +" as "+ userType + " to the game!";
+            connections.broadcast(username,new NotificationMessage(welcomeString), gameData.gameID());
             connections.getConnection(username).send(new LoadGameMessage(gameData.game()));
         }
         catch (DataAccessException e)

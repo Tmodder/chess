@@ -1,9 +1,5 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessMove;
-import chess.ChessPiece;
-import chess.ChessPosition;
 import communication.ResponseException;
 import communication.ServerFacade;
 import websocket.messages.ErrorMessage;
@@ -12,15 +8,14 @@ import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 
-import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientUI implements ServerMessageObserver
 {
     private final ChessBoardUI boardUI = new ChessBoardUI();
     private final ServerFacade facade = new ServerFacade(8080,this);
-    private playGameRepl gameLoop = null;
-    private observeGameRepl observeLoop = null;
+    private PlayGameRepl gameLoop = null;
+    private ObserveGameRepl observeLoop = null;
     private String playerColor;
     private String playerName;
     private Integer currGameNumber;
@@ -228,7 +223,7 @@ public class ClientUI implements ServerMessageObserver
     }
     private void playGame(String id, String color)
     {
-        gameLoop = new playGameRepl(facade);
+        gameLoop = new PlayGameRepl(facade);
         gameLoop.run(Integer.parseInt(id),color,playerName);
     }
     private void logout()
@@ -249,7 +244,7 @@ public class ClientUI implements ServerMessageObserver
 
     private void observeGame(String gameNumber)
     {
-        observeLoop = new observeGameRepl(facade);
+        observeLoop = new ObserveGameRepl(facade);
         observeLoop.run(Integer.parseInt(gameNumber),playerName);
     }
 

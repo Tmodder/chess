@@ -4,10 +4,9 @@ import chess.ChessBoard;
 import chess.ChessPosition;
 import communication.ServerFacade;
 
-import java.util.Objects;
 import java.util.Scanner;
 
-public class observeGameRepl
+public class ObserveGameRepl
 {
     protected final ChessBoardUI boardUI = new ChessBoardUI();
     protected ServerFacade facade;
@@ -39,12 +38,12 @@ public class observeGameRepl
                         return;
                     case "highlight":
                         if (args.length != 2) {
-                            throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
+                            throw new IllegalArgumentException("Command used incorrectly(incorrect number of arguments)");
                         }
                         highlightMoves(args[1]);
                         break;
                     default:
-                        throw new IllegalArgumentException("Command not found");
+                        throw new IllegalArgumentException("Command not encountered");
                 }
             }   catch (IllegalArgumentException e)
             {
@@ -55,7 +54,7 @@ public class observeGameRepl
 
     }
 
-    observeGameRepl(ServerFacade facade)
+    ObserveGameRepl(ServerFacade facade)
     {
         this.facade = facade;
     }
@@ -63,7 +62,10 @@ public class observeGameRepl
 
     protected void redraw()
     {
-        if (board == null) throw new RuntimeException();
+        if (board == null)
+        {
+            throw new RuntimeException();
+        }
         boardUI.drawBoard(true,board);
 
     }

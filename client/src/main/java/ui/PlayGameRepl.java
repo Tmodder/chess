@@ -6,11 +6,11 @@ import communication.ServerFacade;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class playGameRepl extends observeGameRepl
+public class PlayGameRepl extends ObserveGameRepl
 {
     protected String playerColor;
 
-    playGameRepl(ServerFacade facade)
+    PlayGameRepl(ServerFacade facade)
     {
         super(facade);
     }
@@ -119,7 +119,16 @@ public class playGameRepl extends observeGameRepl
             throw new IllegalArgumentException("You can't move the other player's pieces!");
         }
     }
+    @Override
+    protected void redraw()
+    {
+        if (board == null)
+        {
+            throw new RuntimeException();
+        }
+        boardUI.drawBoard(Objects.equals("WHITE",playerColor),board);
 
+    }
 
     private void resign()
     {
