@@ -174,7 +174,18 @@ public class WebSocketHandler
         try
         {
             var authData = authDAO.findAuth(cmd.getAuthToken());
+            var gameData = gameDAO.getGame(cmd.getGameID());
             String username = authData.username();
+            if(Objects.equals(username, gameData.whiteUsername()))
+            {
+                gameDAO.removePlayerFromGame("WHITE",gameData);
+            }
+            else if (Objects.equals(username, gameData.blackUsername()))
+            {
+                gameDAO.removePlayerFromGame("BLACK",gameData);
+            }
+            //observer case: do nothing
+
             // create a server message Load Game new ServerMessage()
             connections.broadcast(username,new NotificationMessage(username + "left the game"));
             connections.remove(username);

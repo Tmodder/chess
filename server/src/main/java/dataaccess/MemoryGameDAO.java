@@ -57,4 +57,9 @@ public class MemoryGameDAO implements GameDAO {
         database.clear();
     }
 
+    public void removePlayerFromGame(String color, Game game)
+    {
+
+    }
+
 }

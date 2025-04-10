@@ -13,4 +13,5 @@ public interface GameDAO {
     ArrayList<Game> getGamesList() throws DataAccessException;
 
     void addPlayerToGame (String color,String username, Game game) throws DataAccessException;
+    void removePlayerFromGame (String color, Game game) throws DataAccessException;
 }

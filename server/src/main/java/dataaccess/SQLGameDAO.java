@@ -190,4 +190,9 @@ public class SQLGameDAO implements GameDAO
         return g.fromJson(json,ChessGame.class);
     }
 
+    public void removePlayerFromGame(String color, Game game) throws DataAccessException
+    {
+       addPlayerToGame(color,null,game);
+    }
+
 }
