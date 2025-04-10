@@ -1,6 +1,7 @@
 package server.websocket;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.InvalidMoveException;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
@@ -159,6 +160,11 @@ public class WebSocketHandler
         {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private String convertMoveToNotation(ChessMove move)
+    {
+
     }
 
 }
