@@ -78,7 +78,7 @@ public class WebSocketHandler
 
     }
 
-    public void resign(UserGameCommand cmd)
+    public void resign(UserGameCommand cmd) throws InvalidMoveException
     {
         try
         {
@@ -86,6 +86,15 @@ public class WebSocketHandler
             // create a server message Load Game new ServerMessage()
             var gameData = gameDAO.getGame(cmd.getGameID());
             var game = gameData.game();
+            String username = auth.username();
+            if (!(Objects.equals(gameData.whiteUsername(), username) || Objects.equals(gameData.blackUsername(), username)))
+            {
+                throw new InvalidMoveException("isObserver");
+            }
+            if (game.isGameOver())
+            {
+                throw new InvalidMoveException("gameOver");
+            }
             game.endGame();
             saveGame(gameData,game);
             connections.broadcast(null,new NotificationMessage(auth.username() + " resigned the game"));
@@ -140,7 +149,12 @@ public class WebSocketHandler
 
             else if (Objects.equals(type,"isObserver"))
             {
-                errorMessage = new ErrorMessage("Error: Observer cant move");
+                errorMessage = new ErrorMessage("Error: Observer cant move or resign");
+            }
+
+            else if (Objects.equals(type,"gameOver"))
+            {
+                errorMessage = new ErrorMessage("Error: Move forbidden because game is over");
             }
 
             else

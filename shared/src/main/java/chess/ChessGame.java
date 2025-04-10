@@ -229,5 +229,5 @@ public class ChessGame {
 
     public void endGame() { gameOver = true;}
 
-    public boolean getGameStatus() {return gameOver;}
+    public boolean isGameOver() {return gameOver;}
 }
