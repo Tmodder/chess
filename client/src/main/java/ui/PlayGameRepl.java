@@ -132,7 +132,15 @@ public class PlayGameRepl extends ObserveGameRepl
 
     private void resign()
     {
-        facade.resign(currGameNumber);
+        System.out.println("Are you sure you want to resign? Type 'y' for yes or 'n' for no.");
+        var scanner = new Scanner(System.in);
+        String command = scanner.nextLine();
+        if (Objects.equals(command,"y"))
+        {
+            facade.resign(currGameNumber);
+        }
+        return;
+
     }
 
     private ChessPiece.PieceType convertStringToPiece(String pieceString) throws IllegalArgumentException
