@@ -238,7 +238,7 @@ public class WebSocketHandler
 
             var oppColor = teamColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
             String oppUsername = Objects.equals(username, gameData.whiteUsername()) ? gameData.blackUsername() : gameData.whiteUsername();
-            String statusMessage = oppUsername + " is in ";
+            String statusMessage = oppUsername + " is in";
 
             if (chessGame.isInCheckmate(oppColor)) {
                 connections.broadcast(null, new NotificationMessage(statusMessage + " checkmate. Game over!"), gameData.gameID());
@@ -258,7 +258,6 @@ public class WebSocketHandler
             String moveStart = convertPosToNotation(cmd.getMove().getStartPosition());
             String moveEnd = convertPosToNotation(cmd.getMove().getEndPosition());
             String message = username + " moved from " + moveStart + " to " + moveEnd;
-            connections.broadcast(null,new LoadGameMessage(chessGame), gameData.gameID());
             connections.broadcast(username,new NotificationMessage(message), gameData.gameID());
         }
         catch (DataAccessException|IOException e) {

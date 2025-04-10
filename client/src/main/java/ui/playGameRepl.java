@@ -101,12 +101,18 @@ public class playGameRepl extends observeGameRepl
 
     private void move(String posOne, String posTwo, String promoPiece) throws IllegalArgumentException
     {
-        var piece = convertStringToPiece(promoPiece);
-        var pieceColor = board.getPiece(convertNotationToPos(posOne)).getTeamColor();
+        var promotion = convertStringToPiece(promoPiece);
+        var piece = board.getPiece(convertNotationToPos(posOne));
+
+        if (piece == null)
+        {
+            throw new IllegalArgumentException("No piece selected!");
+        }
+        var pieceColor = piece.getTeamColor();
         if (pieceColor == ChessGame.TeamColor.WHITE && Objects.equals(playerColor, "WHITE")
                 || pieceColor ==ChessGame.TeamColor.BLACK && Objects.equals(playerColor, "BLACK"))
         {
-            facade.makeMove(currGameNumber, new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),piece));
+            facade.makeMove(currGameNumber, new ChessMove(convertNotationToPos(posOne),convertNotationToPos(posTwo),promotion));
         }
         else
         {
