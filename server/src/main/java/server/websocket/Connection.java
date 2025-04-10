@@ -9,10 +9,12 @@ import java.io.IOException;
 public class Connection {
     public String username;
     public Session session;
+    public int gameId;
 
-    public Connection(String username, Session session) {
+    public Connection(String username, Session session, int gameId) {
         this.username = username;
         this.session = session;
+        this.gameId = gameId;
     }
 
     public void send(ServerMessage msg) throws IOException {

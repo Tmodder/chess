@@ -97,7 +97,7 @@ public class WebSocketHandler
             }
             game.endGame();
             saveGame(gameData,game);
-            connections.broadcast(null,new NotificationMessage(auth.username() + " resigned the game"));
+            connections.broadcast(null,new NotificationMessage(auth.username() + " resigned the game"), gameData.gameID());
 
         } catch (DataAccessException | IOException e) {
             throw new RuntimeException(e);
@@ -108,12 +108,12 @@ public class WebSocketHandler
     {
         try {
 
-            var game = gameDAO.getGame(cmd.getGameID());
+            var gameData = gameDAO.getGame(cmd.getGameID());
             var auth = authDAO.findAuth(cmd.getAuthToken());
             String username = auth.username();
-            connections.add(username,session);
-            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" to the game!"));
-            connections.getConnection(username).send(new LoadGameMessage(game.game()));
+            connections.add(username,session,gameData.gameID());
+            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" to the game!"), gameData.gameID());
+            connections.getConnection(username).send(new LoadGameMessage(gameData.game()));
         }
         catch (DataAccessException e)
         {
@@ -187,7 +187,7 @@ public class WebSocketHandler
             //observer case: do nothing
 
             // create a server message Load Game new ServerMessage()
-            connections.broadcast(username,new NotificationMessage(username + "left the game"));
+            connections.broadcast(username,new NotificationMessage(username + "left the game"), gameData.gameID());
             connections.remove(username);
         } catch (DataAccessException | IOException e) {
             e.printStackTrace();
@@ -226,8 +226,8 @@ public class WebSocketHandler
             String moveStart = convertPosToNotation(cmd.getMove().getStartPosition());
             String moveEnd = convertPosToNotation(cmd.getMove().getEndPosition());
             String message = username + " moved from " + moveStart + " to " + moveEnd;
-            connections.broadcast(null,new LoadGameMessage(chessGame));
-            connections.broadcast(username,new NotificationMessage(message));
+            connections.broadcast(null,new LoadGameMessage(chessGame), gameData.gameID());
+            connections.broadcast(username,new NotificationMessage(message), gameData.gameID());
         }
         catch (DataAccessException|IOException e) {
             e.printStackTrace();
