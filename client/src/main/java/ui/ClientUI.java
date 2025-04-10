@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
@@ -244,7 +245,7 @@ public class ClientUI implements ServerMessageObserver
     {
         facade.observeGame(Integer.parseInt(gameNumber));
         System.out.println("observing game " + gameNumber);
-        boardUI.drawBoard(true);
+        boardUI.drawBoard(true,new ChessBoard());
     }
 
 

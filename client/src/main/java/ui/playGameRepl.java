@@ -62,7 +62,7 @@ public class playGameRepl
                         if (args.length != 2) {
                             throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
-                        //highlightMoves(args[1]);
+                        highlightMoves(args[1]);
                         break;
                     default:
                         throw new IllegalArgumentException("Command not found");
@@ -111,11 +111,13 @@ public class playGameRepl
         {
             throw new IllegalArgumentException("You can't move the other player's pieces!");
         }
-
-
-
     }
 
+    private void highlightMoves(String stringPos)
+    {
+        var position = convertNotationToPos(stringPos);
+        boardUI.drawBoardWithHighlights(Objects.equals(this.playerColor,"WHITE"),board,position);
+    }
     private ChessPiece.PieceType convertStringToPiece(String pieceString) throws IllegalArgumentException
     {
         return switch (pieceString.toLowerCase())
