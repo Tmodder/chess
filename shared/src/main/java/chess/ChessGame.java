@@ -62,12 +62,16 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        // does this work
-       Collection<ChessMove> posMoves =  board.getPiece(startPosition).pieceMoves(board,startPosition);
-       Collection<ChessMove> finalMoves = new ArrayList<>();
+        var startPiece = board.getPiece(startPosition);
+        if (startPiece == null)
+        {
+            return null;
+        }
+        Collection<ChessMove> posMoves =  startPiece.pieceMoves(board,startPosition);
+        Collection<ChessMove> finalMoves = new ArrayList<>();
 
-       for (ChessMove move : posMoves)
-       {
+        for (ChessMove move : posMoves)
+        {
            ChessBoard testBoard = new ChessBoard(board);
            ChessPiece movePiece = board.getPiece(startPosition);
            if (move.getPromotionPiece() != null)
@@ -80,9 +84,8 @@ public class ChessGame {
            {
                finalMoves.add(move);
            }
-       }
-       return finalMoves;
-
+        }
+        return finalMoves;
     }
 
     /**

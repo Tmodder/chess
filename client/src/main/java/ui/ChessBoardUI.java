@@ -225,6 +225,11 @@ public class ChessBoardUI
         var fakeGame = new ChessGame();
         fakeGame.setBoard(board);
         var moves = fakeGame.validMoves(startPos);
+        if (moves == null)
+        {
+            return null;
+        }
+
         if (moves.isEmpty())
         {
             return null;

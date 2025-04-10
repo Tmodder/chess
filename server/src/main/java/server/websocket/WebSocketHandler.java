@@ -40,7 +40,6 @@ public class WebSocketHandler
     {
         try
         {
-            System.out.printf("Received: %s", message);
             var command = new Gson().fromJson(message, UserGameCommand.class);
             if (!checkAuth(command.getAuthToken(),session) || !checkGame(command.getGameID(),session))
             {
