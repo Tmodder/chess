@@ -19,7 +19,9 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler
@@ -40,6 +42,11 @@ public class WebSocketHandler
         {
             System.out.printf("Received: %s", message);
             var command = new Gson().fromJson(message, UserGameCommand.class);
+            if (!checkAuth(command.getAuthToken(),session) || !checkGame(command.getGameID(),session))
+            {
+                return;
+            }
+
             if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE)
             {
                 command = new Gson().fromJson(message, MoveGameCommand.class);
@@ -61,8 +68,12 @@ public class WebSocketHandler
                 default:
                     throw new RuntimeException("Unknown crap");
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (InvalidMoveException e) {
+            handleError("badMove",session,e);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
 
     }
@@ -97,20 +108,50 @@ public class WebSocketHandler
         }
         catch (DataAccessException e)
         {
-            handleError(session,e);
+            handleError(null,session,e);
         }
 
     }
 
-    private void handleError(Session session, DataAccessException e)
+    private void handleError(String type, Session session, Exception e)
     {
         try
         {
-            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game not found")));
+            ErrorMessage errorMessage;
+            if (Objects.equals(type,"gameNotFound"))
+            {
+                errorMessage = new ErrorMessage("Error: game not found");
+            }
+
+            else if (Objects.equals(type,"badAuth"))
+            {
+                errorMessage = new ErrorMessage(("Error: bad auth "));
+            }
+
+            else if (Objects.equals(type,"badMove"))
+            {
+                errorMessage = new ErrorMessage("Error: move not valid");
+            }
+
+            else if (Objects.equals(type,"outOfOrder"))
+            {
+                errorMessage = new ErrorMessage("Error: move out of turn");
+            }
+
+            else if (Objects.equals(type,"isObserver"))
+            {
+                errorMessage = new ErrorMessage("Error: Observer cant move");
+            }
+
+            else
+            {
+                errorMessage = new ErrorMessage("Error: not recognized");
+            }
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
         }
         catch (IOException exception)
         {
-            throw new RuntimeException(exception);
+            exception.printStackTrace();
         }
     }
 
@@ -118,17 +159,17 @@ public class WebSocketHandler
     {
         try
         {
-            var auth = authDAO.findAuth(cmd.getAuthToken());
-            String username = auth.username();
+            var authData = authDAO.findAuth(cmd.getAuthToken());
+            String username = authData.username();
             // create a server message Load Game new ServerMessage()
             connections.broadcast(username,new NotificationMessage(username + "left the game"));
             connections.remove(username);
         } catch (DataAccessException | IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    public void makeMove(MoveGameCommand cmd)
+    public void makeMove(MoveGameCommand cmd) throws InvalidMoveException
     {
         try
         {
@@ -138,6 +179,23 @@ public class WebSocketHandler
 
             var gameData = gameDAO.getGame(cmd.getGameID());
             var chessGame = gameData.game();
+            ChessGame.TeamColor teamColor = null;
+            if (Objects.equals(gameData.whiteUsername(), username))
+            {
+                teamColor = ChessGame.TeamColor.WHITE;
+            }
+            else if (Objects.equals(gameData.blackUsername(), username))
+            {
+                teamColor = ChessGame.TeamColor.BLACK;
+            }
+            else
+            {
+                throw new InvalidMoveException("isObserver");
+            }
+            if (teamColor != chessGame.getTeamTurn())
+            {
+               throw new InvalidMoveException("outOfOrder");
+            }
             chessGame.makeMove(cmd.getMove());
             saveGame(gameData,chessGame);
             String moveStart = convertPosToNotation(cmd.getMove().getStartPosition());
@@ -146,9 +204,10 @@ public class WebSocketHandler
             connections.broadcast(null,new LoadGameMessage(chessGame));
             connections.broadcast(username,new NotificationMessage(message));
         }
-        catch (DataAccessException | InvalidMoveException |IOException e) {
-            throw new RuntimeException(e);
+        catch (DataAccessException|IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     private void saveGame(Game oldGame, ChessGame newGame)
@@ -161,7 +220,7 @@ public class WebSocketHandler
         catch (DataAccessException e)
 
         {
-            throw new RuntimeException(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -172,5 +231,35 @@ public class WebSocketHandler
         String number = String.valueOf(pos.getRow());
         return letter + number;
     }
+
+    private boolean checkGame(int id, Session session)
+    {
+        try
+        {
+            gameDAO.getGame(id);
+        }
+        catch (DataAccessException e)
+        {
+            handleError("gameNotFound", session, e);
+            return false;
+        }
+        return true;
+
+    }
+
+    private boolean checkAuth(String authToken,Session session)
+    {
+        try
+        {
+            authDAO.findAuth(authToken);
+        }
+        catch (DataAccessException e)
+        {
+            handleError("badAuth", session, e);
+            return false;
+        }
+        return true;
+    }
+
 
 }
