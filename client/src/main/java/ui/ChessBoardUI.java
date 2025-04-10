@@ -54,8 +54,11 @@ public class ChessBoardUI
             //get rid of newline character
             board = board.substring(1);
             Collections.reverse(columnList);
+            if (highlightArray != null)
+            {
+                highlightArray = reverseTwoDArray(highlightArray);
+            }
 
-            highlightArray = reverseTwoDArray(highlightArray);
             isReversed = true;
         }
         String [] rows = board.split("\n");
