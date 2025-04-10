@@ -2,6 +2,7 @@ package server.websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPosition;
 import chess.InvalidMoveException;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
@@ -139,9 +140,11 @@ public class WebSocketHandler
             var chessGame = gameData.game();
             chessGame.makeMove(cmd.getMove());
             saveGame(gameData,chessGame);
-
+            String moveStart = convertPosToNotation(cmd.getMove().getStartPosition());
+            String moveEnd = convertPosToNotation(cmd.getMove().getEndPosition());
+            String message = username + " moved from " + moveStart + " to " + moveEnd;
             connections.broadcast(null,new LoadGameMessage(chessGame));
-            connections.broadcast(username,new NotificationMessage(username + " moved from don't care to couldn't care less" ));
+            connections.broadcast(username,new NotificationMessage(message));
         }
         catch (DataAccessException | InvalidMoveException |IOException e) {
             throw new RuntimeException(e);
@@ -162,9 +165,12 @@ public class WebSocketHandler
         }
     }
 
-    private String convertMoveToNotation(ChessMove move)
+    private String convertPosToNotation(ChessPosition pos)
     {
-
+        char l = (char) (pos.getColumn() + 96);
+        String letter = String.valueOf(l);
+        String number = String.valueOf(pos.getRow());
+        return letter + number;
     }
 
 }
