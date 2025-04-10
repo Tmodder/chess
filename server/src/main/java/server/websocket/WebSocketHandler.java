@@ -12,6 +12,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.google.gson.Gson;
 import websocket.commands.MoveGameCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
@@ -81,22 +82,33 @@ public class WebSocketHandler
         }
     }
 
-    public void connect(Session session, UserGameCommand cmd)
+    public void connect(Session session, UserGameCommand cmd) throws IOException
+    {
+        try {
+
+            var game = gameDAO.getGame(cmd.getGameID());
+            var auth = authDAO.findAuth(cmd.getAuthToken());
+            String username = auth.username();
+            connections.add(username,session);
+            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" to the game!"));
+            connections.getConnection(username).send(new LoadGameMessage(game.game()));
+        }
+        catch (DataAccessException e)
+        {
+            handleError(session,e);
+        }
+
+    }
+
+    private void handleError(Session session, DataAccessException e)
     {
         try
         {
-            var auth = authDAO.findAuth(cmd.getAuthToken());
-            String username = auth.username();
-            var game = gameDAO.getGame(cmd.getGameID());
-            // create a server message Load Game new ServerMessage()
-            connections.add(username,session);
-
-
-            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" to the game!"));
-            connections.getConnection(username).send(new LoadGameMessage(game.game()));
-
-        } catch (DataAccessException | IOException e) {
-            throw new RuntimeException(e);
+            session.getRemote().sendString(new Gson().toJson(new ErrorMessage("Game not found")));
+        }
+        catch (IOException exception)
+        {
+            throw new RuntimeException(exception);
         }
     }
 
