@@ -124,7 +124,6 @@ public class playGameRepl extends observeGameRepl
     {
         return switch (pieceString.toLowerCase())
         {
-            case "king" -> ChessPiece.PieceType.KING;
             case "queen" -> ChessPiece.PieceType.QUEEN;
             case "rook" -> ChessPiece.PieceType.ROOK;
             case "knight" -> ChessPiece.PieceType.KNIGHT;

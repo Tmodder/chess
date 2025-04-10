@@ -274,6 +274,7 @@ public class ClientUI implements ServerMessageObserver
                 break;
             case ERROR:
                 var errMsg = (ErrorMessage) notificationMessage;
+                System.out.println(errMsg.getMessage());
                 break;
         }
 
