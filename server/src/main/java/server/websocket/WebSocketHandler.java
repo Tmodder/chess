@@ -69,7 +69,7 @@ public class WebSocketHandler
                     throw new RuntimeException("Unknown crap");
             }
         } catch (InvalidMoveException e) {
-            handleError("badMove",session,e);
+            handleError(e.getMessage(),session,e);
         }
         catch (IOException e)
         {
@@ -112,7 +112,17 @@ public class WebSocketHandler
             var auth = authDAO.findAuth(cmd.getAuthToken());
             String username = auth.username();
             connections.add(username,session,gameData.gameID());
-            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" to the game!"), gameData.gameID());
+            var teamColor = getTeamColor(gameData,username);
+            String userType = "observer";
+            if (teamColor == ChessGame.TeamColor.WHITE)
+            {
+                userType = "white";
+            }
+            else if (teamColor == ChessGame.TeamColor.BLACK)
+            {
+                userType = "black";
+            }
+            connections.broadcast(username,new NotificationMessage("Everyone welcome " + username +" as "+ userType + " to the game!"), gameData.gameID());
             connections.getConnection(username).send(new LoadGameMessage(gameData.game()));
         }
         catch (DataAccessException e)
@@ -137,7 +147,7 @@ public class WebSocketHandler
                 errorMessage = new ErrorMessage(("Error: bad auth "));
             }
 
-            else if (Objects.equals(type,"badMove"))
+            else if (Objects.equals(type,"badMove") || Objects.equals(type,"Move not valid") )
             {
                 errorMessage = new ErrorMessage("Error: move not valid");
             }
@@ -187,7 +197,7 @@ public class WebSocketHandler
             //observer case: do nothing
 
             // create a server message Load Game new ServerMessage()
-            connections.broadcast(username,new NotificationMessage(username + "left the game"), gameData.gameID());
+            connections.broadcast(username,new NotificationMessage(username + " left the game"), gameData.gameID());
             connections.remove(username);
         } catch (DataAccessException | IOException e) {
             e.printStackTrace();
@@ -204,25 +214,47 @@ public class WebSocketHandler
 
             var gameData = gameDAO.getGame(cmd.getGameID());
             var chessGame = gameData.game();
-            ChessGame.TeamColor teamColor = null;
-            if (Objects.equals(gameData.whiteUsername(), username))
+
+            if(gameData.game().isGameOver())
             {
-                teamColor = ChessGame.TeamColor.WHITE;
+                throw new InvalidMoveException("gameOver");
             }
-            else if (Objects.equals(gameData.blackUsername(), username))
-            {
-                teamColor = ChessGame.TeamColor.BLACK;
-            }
-            else
+            ChessGame.TeamColor teamColor = getTeamColor(gameData,username);
+
+            if (teamColor == null)
             {
                 throw new InvalidMoveException("isObserver");
             }
+
             if (teamColor != chessGame.getTeamTurn())
             {
                throw new InvalidMoveException("outOfOrder");
             }
             chessGame.makeMove(cmd.getMove());
             saveGame(gameData,chessGame);
+
+
+            connections.broadcast(null,new LoadGameMessage(chessGame), gameData.gameID());
+
+            var oppColor = teamColor == ChessGame.TeamColor.WHITE ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE;
+            String oppUsername = Objects.equals(username, gameData.whiteUsername()) ? gameData.blackUsername() : gameData.whiteUsername();
+            String statusMessage = oppUsername + " is in ";
+
+            if (chessGame.isInCheckmate(oppColor)) {
+                connections.broadcast(null, new NotificationMessage(statusMessage + " checkmate. Game over!"), gameData.gameID());
+            }
+
+            else if (chessGame.isInCheck(oppColor))
+            {
+                connections.broadcast(null,new NotificationMessage(statusMessage + " check"), gameData.gameID());
+            }
+
+            else if (chessGame.isInStalemate(oppColor))
+            {
+                statusMessage = "Both players in stalemate! Draw!";
+                connections.broadcast(null,new NotificationMessage(statusMessage), gameData.gameID());
+            }
+
             String moveStart = convertPosToNotation(cmd.getMove().getStartPosition());
             String moveEnd = convertPosToNotation(cmd.getMove().getEndPosition());
             String message = username + " moved from " + moveStart + " to " + moveEnd;
@@ -284,6 +316,23 @@ public class WebSocketHandler
             return false;
         }
         return true;
+    }
+
+    private static ChessGame.TeamColor getTeamColor(Game gameData, String username)  {
+        ChessGame.TeamColor teamColor;
+        if (Objects.equals(gameData.whiteUsername(), username))
+        {
+            teamColor = ChessGame.TeamColor.WHITE;
+        }
+        else if (Objects.equals(gameData.blackUsername(), username))
+        {
+            teamColor = ChessGame.TeamColor.BLACK;
+        }
+        else
+        {
+            teamColor = null;
+        }
+        return teamColor;
     }
 
 

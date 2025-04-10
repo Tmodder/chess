@@ -95,7 +95,7 @@ public class ChessGame {
             ChessPiece movingPiece = board.getPiece(move.getStartPosition());
             if (gameOver)
             {
-                throw new InvalidMoveException("Can't move Game over!");
+                throw new InvalidMoveException("gameOver");
             }
             if (movingPiece == null)
             {

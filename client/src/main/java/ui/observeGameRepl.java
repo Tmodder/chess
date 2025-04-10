@@ -18,7 +18,7 @@ public class observeGameRepl
     {
         this.currGameNumber = currGameNumber;
         facade.observeGame(currGameNumber);
-        System.out.print("observing game " + currGameNumber + " as ");
+        System.out.println("observing game " + currGameNumber);
         while (true) {
             System.out.print("[OBSERVE_GAME] >>>");
             var scanner = new Scanner(System.in);
