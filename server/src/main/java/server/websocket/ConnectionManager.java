@@ -26,7 +26,7 @@ public class ConnectionManager
             if (c.session.isOpen()) {
                 if (!c.username.equals(excludeUsername))
                 {
-                    c.send(msg.toString());
+                    c.send(msg);
                 }
             }
             else {
