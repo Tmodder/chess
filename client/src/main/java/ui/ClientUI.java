@@ -19,7 +19,8 @@ public class ClientUI implements ServerMessageObserver
 {
     private final ChessBoardUI boardUI = new ChessBoardUI();
     private final ServerFacade facade = new ServerFacade(8080,this);
-    private final playGameRepl gameLoop = new playGameRepl(facade);
+    private playGameRepl gameLoop = null;
+    private observeGameRepl observeLoop = null;
     private String playerColor;
     private String playerName;
     private Integer currGameNumber;
@@ -165,7 +166,7 @@ public class ClientUI implements ServerMessageObserver
                         {
                             throw new IllegalArgumentException("Command used incorrectly(illegal number of arguments)");
                         }
-                        gameLoop.run(Integer.parseInt(args[1]),args[2],playerName);
+                        playGame(args[1],args[2]);
                         break;
                     case "observe":
                         if(args.length != 2)
@@ -225,6 +226,11 @@ public class ClientUI implements ServerMessageObserver
         System.out.println("logout");
         System.out.println("    Log out of your account");
     }
+    private void playGame(String id, String color)
+    {
+        gameLoop = new playGameRepl(facade);
+        gameLoop.run(Integer.parseInt(id),color,playerName);
+    }
     private void logout()
     {
         facade.logout();
@@ -243,12 +249,9 @@ public class ClientUI implements ServerMessageObserver
 
     private void observeGame(String gameNumber)
     {
-        facade.observeGame(Integer.parseInt(gameNumber));
-        System.out.println("observing game " + gameNumber);
-        boardUI.drawBoard(true,new ChessBoard());
+        observeLoop = new observeGameRepl(facade);
+        observeLoop.run(Integer.parseInt(gameNumber),playerName);
     }
-
-
 
     @Override
     public void notify(ServerMessage notificationMessage) {
@@ -256,10 +259,18 @@ public class ClientUI implements ServerMessageObserver
         {
             case LOAD_GAME:
                 var loadMsg = (LoadGameMessage) notificationMessage;
-                gameLoop.receiveBoard(loadMsg.getGame().getBoard());
+                if (gameLoop != null)
+                {
+                    gameLoop.receiveBoard(loadMsg.getGame().getBoard());
+                }
+                else if (observeLoop != null)
+                {
+                    observeLoop.receiveBoard(loadMsg.getGame().getBoard());
+                }
                 break;
             case NOTIFICATION:
                 var notifyMsg = (NotificationMessage) notificationMessage;
+                System.out.println(notifyMsg.getMessage());
                 break;
             case ERROR:
                 var errMsg = (ErrorMessage) notificationMessage;

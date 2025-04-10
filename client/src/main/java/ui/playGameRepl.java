@@ -6,16 +6,13 @@ import communication.ServerFacade;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class playGameRepl
+public class playGameRepl extends observeGameRepl
 {
-    private ChessBoard board = null;
-    private final ChessBoardUI boardUI = new ChessBoardUI();
-    ServerFacade facade;
-    String playerColor;
-    int currGameNumber;
+    protected String playerColor;
+
     playGameRepl(ServerFacade facade)
     {
-        this.facade = facade;
+        super(facade);
     }
 
     public void run(int currGameNumber,String color,String playerName)
@@ -30,7 +27,6 @@ public class playGameRepl
 
         System.out.print("playing game " + currGameNumber + " as ");
         System.out.println(color);
-        //boardUI.drawBoard(Objects.equals(color, "WHITE"));
         while (true) {
             System.out.print("[IN_GAME] >>>");
             var scanner = new Scanner(System.in);
@@ -53,6 +49,7 @@ public class playGameRepl
                         break;
                     case "leave":
                         assert args.length == 1;
+                        leave();
                         return;
                     case "resign":
                         assert args.length == 1;
@@ -83,7 +80,7 @@ public class playGameRepl
         System.out.println("move <POSITION_ONE> <POSITION_TWO> <PROMOTION_PIECE>");
         System.out.println("     Using chess notation, type where the piece starts from and where it ends");
         System.out.println("If applicable type what piece you want to promote to");
-        System.out.println("highlight <PIECE_POSITION");
+        System.out.println("highlight <PIECE_POSITION>");
         System.out.println("     type the location of a piece to see its valid moves highlighted");
         System.out.println("leave");
         System.out.println("     Exit the game and return to login menu(without ending the game)");
@@ -91,12 +88,6 @@ public class playGameRepl
         System.out.println("    Forfeit the game");
     }
 
-    private void redraw()
-    {
-        if (board == null) throw new RuntimeException();
-        boardUI.drawBoard(Objects.equals(this.playerColor,"WHITE"),board);
-
-    }
 
     private void move(String posOne, String posTwo, String promoPiece) throws IllegalArgumentException
     {
@@ -113,11 +104,7 @@ public class playGameRepl
         }
     }
 
-    private void highlightMoves(String stringPos)
-    {
-        var position = convertNotationToPos(stringPos);
-        boardUI.drawBoardWithHighlights(Objects.equals(this.playerColor,"WHITE"),board,position);
-    }
+
     private ChessPiece.PieceType convertStringToPiece(String pieceString) throws IllegalArgumentException
     {
         return switch (pieceString.toLowerCase())
@@ -133,34 +120,12 @@ public class playGameRepl
         };
     }
 
-    private ChessPosition convertNotationToPos(String stringPos) throws IllegalArgumentException
-    {
-        var chars = stringPos.toCharArray();
-        int row;
-        int col;
-        if (Character.isAlphabetic(chars[0]) && (chars[0] <= 'h' && chars[0] >= 'a'))
-        {
-            col = Character.getNumericValue(chars[0]) - 9;
-        }
-        else
-        {
-            throw new IllegalArgumentException("Chess notation not recognized!");
-        }
-        int digit = Character.getNumericValue(chars[1]);
-        if (Character.isDigit(chars[1]) && (digit <= 8 && digit >= 1))
-        {
-            row = digit;
-        }
-        else
-        {
-            throw new IllegalArgumentException("Chess notation not recognized!");
-        }
-        return new ChessPosition(row,col);
-    }
-
+    @Override
     public void receiveBoard(ChessBoard board)
     {
         this.board = board;
-        boardUI.drawBoard(Objects.equals(this.playerColor,"WHITE"),board);
+        boardUI.drawBoard(Objects.equals("WHITE",playerColor),board);
     }
+
+
 }

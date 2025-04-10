@@ -45,12 +45,16 @@ public class WebSocketHandler
             switch (command.getCommandType()) {
                 case CONNECT:
                     connect(session, command);
+                    break;
                 case RESIGN:
                     resign(command);
+                    break;
                 case LEAVE:
                     leave(command);
+                    break;
                 case MAKE_MOVE:
                     makeMove((MoveGameCommand) command);
+                    break;
                 default:
                     throw new RuntimeException("Unknown crap");
             }
@@ -70,7 +74,7 @@ public class WebSocketHandler
             var game = gameData.game();
             game.endGame();
             saveGame(gameData,game);
-            connections.broadcast(null,new NotificationMessage(auth.username() + "resigned the game"));
+            connections.broadcast(null,new NotificationMessage(auth.username() + " resigned the game"));
 
         } catch (DataAccessException | IOException e) {
             throw new RuntimeException(e);
@@ -124,7 +128,7 @@ public class WebSocketHandler
             saveGame(gameData,chessGame);
 
             connections.broadcast(null,new LoadGameMessage(chessGame));
-            connections.broadcast(username,new NotificationMessage(username + "moved from don't care to couldn't care less" ));
+            connections.broadcast(username,new NotificationMessage(username + " moved from don't care to couldn't care less" ));
         }
         catch (DataAccessException | InvalidMoveException |IOException e) {
             throw new RuntimeException(e);

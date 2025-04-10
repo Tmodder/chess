@@ -126,7 +126,7 @@ public class ServerFacade
     public void observeGame(int gameNumber)
     {
         int gameId = gameIdList.get(gameNumber -1);
-        //finish implementation in phase 6
+        socket.send(new UserGameCommand(UserGameCommand.CommandType.CONNECT,authToken,gameId));
     }
 
     public void clear()
@@ -145,9 +145,10 @@ public class ServerFacade
 
     }
 
-    public void leave()
+    public void leave(int gameNumber)
     {
-
+        int gameId = gameIdList.get(gameNumber - 1);
+        socket.send(new UserGameCommand(UserGameCommand.CommandType.LEAVE,authToken,gameId));
     }
 
 
