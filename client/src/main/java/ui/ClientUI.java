@@ -13,12 +13,17 @@ import java.util.Scanner;
 public class ClientUI implements ServerMessageObserver
 {
     private final ChessBoardUI boardUI = new ChessBoardUI();
-    private final ServerFacade facade = new ServerFacade(8080,this);
+    private final ServerFacade facade;
     private PlayGameRepl gameLoop = null;
     private ObserveGameRepl observeLoop = null;
     private String playerColor;
     private String playerName;
     private Integer currGameNumber;
+
+    public ClientUI(String serverName) {
+        facade = new ServerFacade(serverName, this);
+    }
+
     public void runMenu()
     {
         System.out.println("♕ Lets play some freakin chess.");

@@ -18,10 +18,10 @@ public class WebSocketCommunicator extends Endpoint
 {
     private ServerMessageObserver msgObserver;
     public Session session;
-    public WebSocketCommunicator(ServerMessageObserver msgObserver) throws ResponseException {
+    public WebSocketCommunicator(String address, ServerMessageObserver msgObserver) throws ResponseException {
         try {
             this.msgObserver = msgObserver;
-            URI uri = new URI("ws://localhost:8080/ws");
+            URI uri = new URI("ws://" + address +"/ws");
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, uri);
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {

@@ -19,10 +19,10 @@ public class ServerFacade
     private String authToken;
     private String username;
 
-    public ServerFacade(int port, ServerMessageObserver msgObserver) {
-        String url = "http://localhost:" + String.valueOf(port);
+    public ServerFacade(String address, ServerMessageObserver msgObserver) {
+        String url = "http://" + address;
         communicator = new ClientCommunicator(url);
-        socket =  new WebSocketCommunicator(msgObserver);
+        socket =  new WebSocketCommunicator(address, msgObserver);
     }
 
     public void login(String username, String password)

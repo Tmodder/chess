@@ -1,13 +1,11 @@
-import chess.*;
-import communication.WebSocketCommunicator;
-import ui.ClientUI;
-import websocket.commands.UserGameCommand;
 
-import java.util.Scanner;
+import ui.ClientUI;
+
 
 public class Main {
     public static void main(String[] args) {
-        var ui = new ClientUI();
+        var serverName = args.length > 0 ? args[0] : "localhost:8080";
+        var ui = new ClientUI(serverName);
         ui.runMenu();
     }
 }
